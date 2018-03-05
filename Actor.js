@@ -251,11 +251,25 @@ function ActorApplyRestrain(RestrainName) {
 			} else return;
 		}
 
+		// Collar (only available in the Kinbaku club for now)
+		if ((RestrainName == "Collar") && (CurrentChapter == "C101_KinbakuClub")) {
+			PlayerRemoveInventory("Collar", 1);
+			ActorAddInventory("Collar");
+			CurrentTime = CurrentTime + 60000;
+		}
+
 		// Regular gags (gags can be swapped)
 		if ((RestrainName == "BallGag") || (RestrainName == "TapeGag") || (RestrainName == "ClothGag")) {
 			ActorUngag();
 			PlayerRemoveInventory(RestrainName, 1);
 			ActorAddInventory(RestrainName);
+			CurrentTime = CurrentTime + 60000;
+		}
+
+		// Blindfold (only available in the Kinbaku club for now)
+		if ((RestrainName == "Blindfold") && (CurrentChapter == "C101_KinbakuClub")) {
+			PlayerRemoveInventory("Blindfold", 1);
+			ActorAddInventory("Blindfold");
 			CurrentTime = CurrentTime + 60000;
 		}
 
@@ -306,6 +320,8 @@ function ActorSpecificClearInventory(QueryActor, Recover) {
 			while (Actor[A][ActorInventory].length > 0) {
 				if ((Actor[A][ActorInventory][0] != "VibratingEgg") && (Actor[A][ActorInventory][0] != "TwoRopes") && (Actor[A][ActorInventory][0] != "Collar") && (Actor[A][ActorInventory][0] != "ChastityBelt") && (Actor[A][ActorInventory][0] != "TapeGag") && Recover)
 					PlayerAddInventory(Actor[A][ActorInventory][0], 1);
+				if ((Actor[A][ActorInventory][0] == "TwoRopes") && Recover)
+					PlayerAddInventory("Rope", 1);
 				Actor[A][ActorInventory].splice(0, 1);
 			}
 			if (HadEgg) Actor[A][ActorInventory].push("VibratingEgg");

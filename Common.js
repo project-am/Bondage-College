@@ -16,6 +16,8 @@ var KeyPress = "";
 var IsMobile = false;
 var TextPhase = 0;
 var CSVCache = {};
+var MaxFightSequence = 500;
+var MaxRaceSequence = 1000;
 
 // Array variables
 var IntroStage = 0;
@@ -36,11 +38,16 @@ var StageSubMod = 8;
 var StageFunction = 9;
 var TextTag = 0;
 var TextContent = 1;
+var FightMoveType = 0;
+var FightMoveTime = 1;
+var RaceMoveType = 0;
+var RaceMoveTime = 1;
 
 // Common variables
 var Common_BondageAllowed = true;
 var Common_SelfBondageAllowed = true;
 var Common_PlayerName = "";
+var Common_PlayerOwner = "";
 var Common_PlayerRestrained = false;
 var Common_PlayerGagged = false;
 var Common_PlayerBlinded = false;
@@ -54,6 +61,7 @@ var Common_PlayerNaked = false;
 var Common_PlayerCostume = "";
 var Common_PlayerPose = "";
 var Common_PlayerCrime = "";
+var Common_ClubStatus = "";
 
 // Returns the current date and time in a yyyy-mm-dd hh:mm:ss format
 function GetFormatDate() {
@@ -138,6 +146,7 @@ function ReadCSV(Array, FileName) {
 // Returns a working language if translation isn't fully ready
 function GetWorkingLanguage() {
 	if ((CurrentLanguageTag == "FR") && ((CurrentChapter == "C000_Intro") || (CurrentChapter == "C001_BeforeClass") || (CurrentChapter == "C002_FirstClass") || (CurrentChapter == "C003_MorningDetention") || (CurrentChapter == "C999_Common"))) return "FR";
+	if ((CurrentLanguageTag == "PL") && ((CurrentChapter == "C000_Intro"))) return "PL";
 	if ((CurrentLanguageTag == "CN") && ((CurrentChapter == "C000_Intro") || (CurrentChapter == "C005_GymClass") || (CurrentChapter == "C999_Common"))) return "CN";
 	return "EN";
 }
@@ -229,6 +238,25 @@ function GetText(Tag) {
 
 }
 
+// Returns the text for a specific CSV associated with the tag
+function GetCSVText(CSVText, Tag) {
+
+	// Make sure the text CSV file is loaded
+	if (CSVText != null) {
+		
+		// Cycle the text to find a matching tag and returns the text content
+		Tag = Tag.trim().toUpperCase();
+		for (var T = 0; T < CSVText.length; T++)
+			if (CSVText[T][TextTag].trim().toUpperCase() == Tag)
+				return CSVText[T][TextContent].trim();
+		
+		// Returns an error message
+		return "MISSING TEXT FOR TAG: " + Tag.trim();
+
+	} else return "";
+
+}
+
 // Triggers the leave or wait button if needed
 function LeaveButtonClick() {
 	
@@ -242,4 +270,13 @@ function LeaveButtonClick() {
 		if ((MouseX >= 1125) && (MouseX <= 1200) && (MouseY >= 600) && (MouseY <= 675)) 
 			SetScene(LeaveChapter, LeaveScreen);
 
+}
+
+// Creates a path from the supplied paths parts
+function GetPath(paths) {
+    var path = arguments[0];
+    for (var index = 1; index < arguments.length; index++) {
+        path += "/" + arguments[index];
+    }
+    return path;
 }

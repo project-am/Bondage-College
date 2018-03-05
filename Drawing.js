@@ -1,6 +1,22 @@
 // A bank of all the chached images
 var CacheImage = {};
 
+// Icons bank and paths
+var Icons = new function () {
+    this.Path = GetPath("Icons");
+    this.Fight = new function (parent) {
+        this.Path = GetPath("C999_Common", "Fights", "Icons");
+        this.Punch = GetIconPath(this.Path, "Punch");
+        this.Rope = GetIconPath(this.Path, "Rope");
+        this.TennisBall = GetIconPath(this.Path, "TennisBall");
+    }(this);
+    this.Race = new function (parent) {
+        this.Path = GetPath("C999_Common", "Races", "Icons");
+        this.ElbowBound = GetIconPath(this.Path, "ElbowBound");
+        this.KneeBound = GetIconPath(this.Path, "KneeBound");
+    }(this);
+}();
+
 // Returns the image file or build it from the source
 function DrawGetImage(Source) {
 
@@ -232,6 +248,9 @@ function DrawInventory(ctx) {
 	else
 		DrawImage(ctx, "Icons/" + GetPlayerIconImage() + "_Inactive.png", 0, 601);
 	
+	// Draw an arrow over the player head if there's a skill level up
+	if (PlayerSkillShowLevelUp > 0) DrawImage(ctx, "Icons/SkillLevelUp.png", 0, 601);
+	
 	// Scroll in the full inventory to draw the icons and quantity, draw a padlock over the item if it's locked
 	var Pos = 1;
 	for (var I = 0; I < PlayerInventory.length; I++) {
@@ -284,7 +303,7 @@ function BuildBottomBar() {
 }
 
 // Returns the name of the image file to use to draw the player
-function DrawGetPlayerImageName() {
+function DrawGetPlayerImageName(IncludePose) {
 	
 	// Get the first part of the image
 	var ImageCloth = "Clothed";
@@ -318,7 +337,7 @@ function DrawGetPlayerImageName() {
 
 	// Sixth part is the pose
 	var ImagePose = "";
-    if (Common_PlayerPose != "") ImagePose = "_" + Common_PlayerPose;
+    if ((Common_PlayerPose != "") && IncludePose) ImagePose = "_" + Common_PlayerPose;
 
 	// Return the constructed name
 	return ImageCloth + ImageBondage + ImageCollar + ImageGag + ImageBlindfold + ImagePose;
@@ -328,14 +347,14 @@ function DrawGetPlayerImageName() {
 // Draw the regular player image (600x600) (can zoom if an X and Y are provided)
 function DrawPlayerImage(X, Y) {
 	var ctx = document.getElementById("MainCanvas").getContext("2d");
-	if ((X == 0) && (Y == 0)) DrawImage(ctx, "C999_Common/Player/" + DrawGetPlayerImageName() + ".jpg", 600, 0);
-	else DrawImageZoom(ctx, "C999_Common/Player/" + DrawGetPlayerImageName() + ".jpg", X, Y, 600, 600, 600, 0, 1200, 1200);
+	if ((X == 0) && (Y == 0)) DrawImage(ctx, "C999_Common/Player/" + DrawGetPlayerImageName(false) + ".jpg", 600, 0);
+	else DrawImageZoom(ctx, "C999_Common/Player/" + DrawGetPlayerImageName(false) + ".jpg", X, Y, 600, 600, 600, 0, 1200, 1200);
 }
 
 // Draw the transparent player image (600x900) with a zoom if required
 function DrawTransparentPlayerImage(X, Y, Zoom) {
 	var ctx = document.getElementById("MainCanvas").getContext("2d");
-	DrawImageZoom(ctx, "Actors/Player/" + DrawGetPlayerImageName() + ".png", 0, 0, 600, 900, X, Y, 600 * Zoom, 900 * Zoom);
+	DrawImageZoom(ctx, "Actors/Player/" + DrawGetPlayerImageName(true) + ".png", 0, 0, 600, 900, X, Y, 600 * Zoom, 900 * Zoom);
 }
 
 // Draw the transparent actor over the current background
@@ -357,11 +376,21 @@ function DrawActor(ActorToDraw, X, Y, Zoom) {
 		if (ActorSpecificHasInventory(ActorToDraw, "Rope")) ImageBondage = "_Rope";
 		if (ActorSpecificHasInventory(ActorToDraw, "TwoRopes")) ImageBondage = "_TwoRopes";
 
-		// Third part is the gag
+		// Third part is the collar, which only shows for certain clothes
+		var ImageCollar = "";
+		if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel")) {
+			if (ActorSpecificHasInventory(ActorToDraw, "Collar")) ImageCollar = "_Collar";
+		}
+
+		// Fourth part is the gag
 		var ImageGag = "_NoGag";
 		if (ActorSpecificHasInventory(ActorToDraw, "BallGag")) ImageGag = "_BallGag";
 		if (ActorSpecificHasInventory(ActorToDraw, "TapeGag")) ImageGag = "_TapeGag";
 		if (ActorSpecificHasInventory(ActorToDraw, "ClothGag")) ImageGag = "_ClothGag";
+
+		// Fifth part is the blindfold
+		var ImageBlindfold = "";	
+		if (ActorSpecificHasInventory(ActorToDraw, "Blindfold")) ImageBlindfold = "_Blindfold";
 
 		// Fourth part is the pose
 		var ImagePose = "";
@@ -369,7 +398,7 @@ function DrawActor(ActorToDraw, X, Y, Zoom) {
 
 		// Draw the full image from all parts
 		var ctx = document.getElementById("MainCanvas").getContext("2d");
-		DrawImageZoom(ctx, "Actors/" + ActorToDraw + "/" + ImageCloth + ImageBondage + ImageGag + ImagePose + ".png", 0, 0, 600, 900, X, Y, 600 * Zoom, 900 * Zoom);
+		DrawImageZoom(ctx, "Actors/" + ActorToDraw + "/" + ImageCloth + ImageBondage + ImageCollar + ImageGag + ImageBlindfold + ImagePose + ".png", 0, 0, 600, 900, X, Y, 600 * Zoom, 900 * Zoom);
 		
 	}
 
@@ -383,4 +412,20 @@ function DrawInteractionActor() {
 		if (ActorHasInventory("TwoRopes")) DrawActor(CurrentActor, 600, -250, 1);
 		else DrawActor(CurrentActor, 600, 0, 1);
 	}
+}
+
+// Draw a ramdom image of the player as transition from chapter to chapter
+function DrawPlayerTransition(ctx) {
+	var ImgRnd = (Math.round(new Date().getTime() / 5000) % 5) + 1;
+	DrawImage(ctx, "Actors/PlayerTransition/Player0" + ImgRnd.toString() + ".png", 900, 0);
+}
+
+// Returns a the path to a icon.  IconName can be preceeded by additional paths.
+function GetIconPath(IconName) {
+    return GetPath.apply(undefined, arguments) + ".png";
+}
+
+// Returns a the path to an icon for the current screen.  IconName can be preceeded by additional paths.
+function GetIconScreenPath(IconName) {
+    return GetIconPath(GetPath.apply(undefined, [CurrentChapter, CurrentScreen].concat(Array.from(arguments))));
 }
