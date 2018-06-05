@@ -23,10 +23,10 @@ var QuizGoal = -1;
 var QuizText = null;
 var QuizQuestion = null;
 var QuizAnswer = null;
-var QuizFirstQuestionTime = 6000;
+var QuizFirstQuestionTime = 5000;
 var QuizBeforeAnswerTime = 3000;
 var QuizAnswerProgressTime = 3000;
-var QuizOtherQuestionTime = 4000;
+var QuizOtherQuestionTime = 3000;
 var QuizBetweenQuestionTimer = 0;
 var QuizShuffleDone = false;
 var QuizQuestionText = 0;
@@ -176,15 +176,15 @@ function QuizRenderAfterAnswer() {
 function QuizRenderEnd() {
 	DrawText(Common_PlayerName + ": " + QuizProgressLeft.toString(), 600, 60, "white");
 	DrawText(QuizActorRight + ": " + QuizProgressRight.toString(), 600, 120, "white");
-	if (QuizProgressLeft == QuizGoal) DrawText(GetCSVText(QuizText, "Perfect"), 600, 200, "white");
-	else if (QuizProgressLeft >= QuizProgressRight) DrawText(GetCSVText(QuizText, "Victory"), 600, 200, "white");
+	if (QuizProgressRight == 0) DrawText(GetCSVText(QuizText, "Perfect"), 600, 200, "white");
+	else if (QuizProgressLeft > QuizProgressRight) DrawText(GetCSVText(QuizText, "Victory"), 600, 200, "white");
 	else DrawText(GetCSVText(QuizText, "Defeat"), 600, 200, "white");	
 }
 
 // Prepare the next quiz question if needed
 function QuizNextQuestion() {
 	if ((QuizTimer >= QuizBetweenQuestionTimer) && (QuizBetweenQuestionTimer > 0)) {
-		if (QuizProgressLeft + QuizProgressRight >= QuizGoal) QuizEnded = true;
+		if ((QuizProgressLeft >= QuizGoal) || (QuizProgressRight >= QuizGoal)) QuizEnded = true;
 		QuizTimer = QuizOtherQuestionTime * -1;
 		QuizAnswerText = "";
 		QuizAnswerBy = "";
