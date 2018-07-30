@@ -33,7 +33,54 @@ function C012_AfterClass_DormExit_Click() {
 function C012_AfterClass_DormExit_LaunchKinbaku() {
 	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
 		if (Common_PlayerClothed && (Common_PlayerCostume == "")) {
-			SetScene("C101_KinbakuClub", "Intro");
+			if (CurrentTime > (18 * 60 * 60 * 1000)) OverridenIntroText = GetText("ClubHasFinished");
+			else {
+				CurrentTime = CurrentTime + 290000;
+				if (C101_KinbakuClub_JennaIntro_CurrentStage == 80) SetScene("C101_KinbakuClub", "ClubRoom1");
+				else SetScene("C101_KinbakuClub", "Intro");
+			}
 		} else OverridenIntroText = GetText("SchoolClothesFirst");
 	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Launch the Roommates Dorm
+function C012_AfterClass_DormExit_LaunchRoommatesDorm() {
+	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
+		if (Common_PlayerClothed && ((Common_PlayerCostume == "") || (Common_PlayerCostume == "BlackDress") || (Common_PlayerCostume == "Teacher"))) {
+			CurrentTime = CurrentTime + 110000;
+			SetScene(CurrentChapter, "Roommates");
+		} else OverridenIntroText = GetText("RegularClothesFirst");
+	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Launch the Pub
+function C012_AfterClass_DormExit_LaunchPub() {
+	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
+		if (Common_PlayerClothed && ((Common_PlayerCostume == "") || (Common_PlayerCostume == "BlackDress") || (Common_PlayerCostume == "Teacher"))) {
+			CurrentTime = CurrentTime + 290000;
+			SetScene(CurrentChapter, "Pub");
+		} else OverridenIntroText = GetText("RegularClothesFirst");
+	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Launch the pool
+function C012_AfterClass_DormExit_LaunchPool() {
+	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
+		if (Common_PlayerClothed && (Common_PlayerCostume == "RedBikini")) {
+			CurrentTime = CurrentTime + 290000;
+			SetScene(CurrentChapter, "Pool");
+		} else OverridenIntroText = GetText("SwimsuitFirst");
+	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Launch the library
+function C012_AfterClass_DormExit_LaunchLibrary() {
+	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
+		if (Common_PlayerClothed && (Common_PlayerCostume == "")) {
+			if (CurrentTime < (20.9 * 60 * 60 * 1000)) {
+				CurrentTime = CurrentTime + 290000;
+				SetScene(CurrentChapter, "Library");				
+			} else OverridenIntroText = GetText("LibraryClosed");
+		} else OverridenIntroText = GetText("SchoolClothesFirst");
+	} else OverridenIntroText = GetText("SchoolClothesFirst");
 }

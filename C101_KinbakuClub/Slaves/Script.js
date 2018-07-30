@@ -12,7 +12,8 @@ var C101_KinbakuClub_Slaves_JennaDone = false; // false if Jenna hasn't already 
 var C101_KinbakuClub_Slaves_JennaWillGag = false; // jenna will gag a noise player if she leaves them
 var C101_KinbakuClub_Slaves_WaitingDone = false;
 var C101_KinbakuClub_Slaves_SelfShackle = false; // true if player shackles herself.
-var C101_KinbakuClub_Slaves_EricaShackle = false; // true if player is shackled by erica.
+var C101_KinbakuClub_Slaves_EricaShackle = false; // true if player is shackled by Erica.
+var C101_KinbakuClub_Slaves_AmeliaShackle = false; // true if player is shackled by Ameilia.
 var C101_KinbakuClub_Slaves_AllShackle = false; // true if player is shackled by the whole club.
 var C101_KinbakuClub_Slaves_ButErica = false; // option if player is told the whole club knows about the shackles.
 var C101_KinbakuClub_Slaves_ChasteGagged = false;
@@ -28,14 +29,6 @@ var C101_KinbakuClub_Slaves_PlayerNotVeryArousedGagged = false; // combined arou
 var C101_KinbakuClub_Slaves_PlayerVeryArousedGagged = false; // combined arousal and gag variables.
 var C101_KinbakuClub_Slaves_TeaseImage = 0; // image used for Jenna's hand is no special images.
 var C101_KinbakuClub_Slaves_Random = 0; // used for random numbers other than for responses.
-var C101_KinbakuClub_Slaves_Random1 = 0; // Random number scores for available responses.
-var C101_KinbakuClub_Slaves_Random2 = 0;
-var C101_KinbakuClub_Slaves_Random3 = 0;
-var C101_KinbakuClub_Slaves_Random4 = 0;
-var C101_KinbakuClub_Slaves_Random5 = 0;
-var C101_KinbakuClub_Slaves_Random6 = 0;
-var C101_KinbakuClub_Slaves_Random7 = 0;
-var C101_KinbakuClub_Slaves_Random8 = 0;
 var C101_KinbakuClub_Slaves_Option1 = false; // For selecting available responses.
 var C101_KinbakuClub_Slaves_Option2 = false;
 var C101_KinbakuClub_Slaves_Option3 = false;
@@ -78,6 +71,7 @@ function C101_KinbakuClub_Slaves_CalcParams() {
 	C101_KinbakuClub_Slaves_PlayerVeryArousedGagged = C101_KinbakuClub_Slaves_PlayerVeryAroused && Common_PlayerGagged;
 	C101_KinbakuClub_Slaves_PlayerVeryAroused = (C101_KinbakuClub_Slaves_PlayerArousal > 400);
 	C101_KinbakuClub_Slaves_NotGaggedForIt = C101_KinbakuClub_Slaves_NotGaggingForIt && Common_PlayerGagged;
+	if (PlayerHasLockedInventory("Manacles")) PlayerClothes("Underwear");
 }
 
 // Chapter 101 - Slaves Load
@@ -86,11 +80,11 @@ function C101_KinbakuClub_Slaves_Load() {
 	// Bag stage starts at 0
 	if (C101_KinbakuClub_Slaves_CurrentStage <= 100) {
 		C101_KinbakuClub_Slaves_CurrentStage = 0;
-		ActorLoad("", "ClubRoom4");
+		LeaveScreen = "ClubRoom4";
 		LeaveIcon = "";
 	}
 
-	// Player when shackled by erica
+	// Player when shackled by Erica
 	if (C101_KinbakuClub_Slaves_CurrentStage == 115) {
 		ActorLoad("Erica", "ClubRoom4");
 		PlayerLockInventory("Manacles");
@@ -98,9 +92,17 @@ function C101_KinbakuClub_Slaves_Load() {
 		C101_KinbakuClub_Slaves_EricaShackle = true;
 	}
 
+	// Player when shackled by Amelia
+	if (C101_KinbakuClub_Slaves_CurrentStage == 116) {
+		LeaveScreen = "ClubRoom4";
+		PlayerLockInventory("Manacles");
+		LeaveIcon = "";
+		C101_KinbakuClub_Slaves_AmeliaShackle = true;
+	}
+
 	// Player when a slave
 	if (C101_KinbakuClub_Slaves_CurrentStage == 120) {
-		ActorLoad("", "ClubRoom4");
+		LeaveScreen = "ClubRoom4";
 		LeaveIcon = "Leave";
 	}
 
@@ -258,6 +260,7 @@ function C101_KinbakuClub_Slaves_Click() {
 	// Regular and inventory interactions
 	ClickInteraction(C101_KinbakuClub_Slaves_CurrentStage);
 	var ClickInv = GetClickedInventory();
+	if (C101_KinbakuClub_Slaves_CurrentStage == 120) InventoryClick(GetClickedInventory(), "C101_KinbakuClub", "Slaves");
 	
 	if ((C101_KinbakuClub_Slaves_CurrentStage == 100) || (C101_KinbakuClub_Slaves_CurrentStage == 110)) {
 		if ((ClickInv == "BallGag") && !PlayerHasLockedInventory("BallGag")) {
@@ -350,8 +353,8 @@ function C101_KinbakuClub_Slaves_FullManacle() {
 	C101_KinbakuClub_Slaves_ManacleWarning = true;
 }
 
-// Chapter 101 - Slaves - Erica leave player manacled
-function C101_KinbakuClub_Slaves_EricaLeaves() {
+// Chapter 101 - Slaves - The actor leaves player manacled
+function C101_KinbakuClub_Slaves_ActorLeaves() {
 	LeaveIcon = "Leave";
 }
 
@@ -417,6 +420,14 @@ function C101_KinbakuClub_Slaves_ClaimErica() {
 	}
 }
 
+// Chapter 101 - Slaves - Player claims Amelia shackled her
+function C101_KinbakuClub_Slaves_ClaimAmelia() {
+	if (!C101_KinbakuClub_Slaves_AmeliaShackle) {
+		OverridenIntroText = GetText("LieToJenna");
+		ActorChangeAttitude(-1, 0);
+	}
+}
+
 // Chapter 101 - Slaves - Player claims they all helped shackled her
 function C101_KinbakuClub_Slaves_ClaimAll() {
 	if (!C101_KinbakuClub_Slaves_AllShackle) {
@@ -438,6 +449,7 @@ function C101_KinbakuClub_Slaves_JennaLeaves() {
 		C101_KinbakuClub_Slaves_NewMistress = false;
 	}
 	else {
+		if (!PlayerHasLockedInventory("Manacles")) PlayerClothes("");
 		ActorLoad("", "ClubRoom4");
 		LeaveIcon = "Leave";
 	}
@@ -480,40 +492,27 @@ function C101_KinbakuClub_Slaves_EndGame() {
 
 // Chapter 101 - Slaves - Select a random choice of the vairiable options during the game.
 function C101_KinbakuClub_Slaves_RandomSelection() {
-	C101_KinbakuClub_Slaves_Random1 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random2 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random3 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random4 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random5 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random6 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random7 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Random8 = Math.floor((Math.random() * 12) + 1);
-	C101_KinbakuClub_Slaves_Option1 = false;
-	C101_KinbakuClub_Slaves_Option2 = false;
-	C101_KinbakuClub_Slaves_Option3 = false;
-	C101_KinbakuClub_Slaves_Option4 = false;
-	C101_KinbakuClub_Slaves_Option5 = false;
-	C101_KinbakuClub_Slaves_Option6 = false;
-	C101_KinbakuClub_Slaves_Option7 = false;
-	C101_KinbakuClub_Slaves_Option8 = false;
-	C101_KinbakuClub_Slaves_Option9 = false;
-	C101_KinbakuClub_Slaves_Option10 = false;
-	C101_KinbakuClub_Slaves_Option11 = false;
-	C101_KinbakuClub_Slaves_Option12 = false;
-	if (C101_KinbakuClub_Slaves_PlayerArousal < 500) {
-		if ((C101_KinbakuClub_Slaves_Random1 == 1) || (C101_KinbakuClub_Slaves_Random2 == 1) || (C101_KinbakuClub_Slaves_Random3 == 1) || (C101_KinbakuClub_Slaves_Random4 == 1) || (C101_KinbakuClub_Slaves_Random5 == 1) || (C101_KinbakuClub_Slaves_Random6 == 1) || (C101_KinbakuClub_Slaves_Random7 == 1) || (C101_KinbakuClub_Slaves_Random8 == 1)) C101_KinbakuClub_Slaves_Option1 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 2) || (C101_KinbakuClub_Slaves_Random2 == 2) || (C101_KinbakuClub_Slaves_Random3 == 2) || (C101_KinbakuClub_Slaves_Random4 == 2) || (C101_KinbakuClub_Slaves_Random5 == 2) || (C101_KinbakuClub_Slaves_Random6 == 2) || (C101_KinbakuClub_Slaves_Random7 == 2) || (C101_KinbakuClub_Slaves_Random8 == 2)) C101_KinbakuClub_Slaves_Option2 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 3) || (C101_KinbakuClub_Slaves_Random2 == 3) || (C101_KinbakuClub_Slaves_Random3 == 3) || (C101_KinbakuClub_Slaves_Random4 == 3) || (C101_KinbakuClub_Slaves_Random5 == 3) || (C101_KinbakuClub_Slaves_Random6 == 3) || (C101_KinbakuClub_Slaves_Random7 == 3) || (C101_KinbakuClub_Slaves_Random8 == 3)) C101_KinbakuClub_Slaves_Option3 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 4) || (C101_KinbakuClub_Slaves_Random2 == 4) || (C101_KinbakuClub_Slaves_Random3 == 4) || (C101_KinbakuClub_Slaves_Random4 == 4) || (C101_KinbakuClub_Slaves_Random5 == 4) || (C101_KinbakuClub_Slaves_Random6 == 4) || (C101_KinbakuClub_Slaves_Random7 == 4) || (C101_KinbakuClub_Slaves_Random8 == 4)) C101_KinbakuClub_Slaves_Option4 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 5) || (C101_KinbakuClub_Slaves_Random2 == 5) || (C101_KinbakuClub_Slaves_Random3 == 5) || (C101_KinbakuClub_Slaves_Random4 == 5) || (C101_KinbakuClub_Slaves_Random5 == 5) || (C101_KinbakuClub_Slaves_Random6 == 5) || (C101_KinbakuClub_Slaves_Random7 == 5) || (C101_KinbakuClub_Slaves_Random8 == 5)) C101_KinbakuClub_Slaves_Option5 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 6) || (C101_KinbakuClub_Slaves_Random2 == 6) || (C101_KinbakuClub_Slaves_Random3 == 6) || (C101_KinbakuClub_Slaves_Random4 == 6) || (C101_KinbakuClub_Slaves_Random5 == 6) || (C101_KinbakuClub_Slaves_Random6 == 6) || (C101_KinbakuClub_Slaves_Random7 == 6) || (C101_KinbakuClub_Slaves_Random8 == 6)) C101_KinbakuClub_Slaves_Option6 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 7) || (C101_KinbakuClub_Slaves_Random2 == 7) || (C101_KinbakuClub_Slaves_Random3 == 7) || (C101_KinbakuClub_Slaves_Random4 == 7) || (C101_KinbakuClub_Slaves_Random5 == 7) || (C101_KinbakuClub_Slaves_Random6 == 7) || (C101_KinbakuClub_Slaves_Random7 == 7) || (C101_KinbakuClub_Slaves_Random8 == 7)) C101_KinbakuClub_Slaves_Option7 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 8) || (C101_KinbakuClub_Slaves_Random2 == 8) || (C101_KinbakuClub_Slaves_Random3 == 8) || (C101_KinbakuClub_Slaves_Random4 == 8) || (C101_KinbakuClub_Slaves_Random5 == 8) || (C101_KinbakuClub_Slaves_Random6 == 8) || (C101_KinbakuClub_Slaves_Random7 == 8) || (C101_KinbakuClub_Slaves_Random8 == 8)) C101_KinbakuClub_Slaves_Option8 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 9) || (C101_KinbakuClub_Slaves_Random2 == 9) || (C101_KinbakuClub_Slaves_Random3 == 9) || (C101_KinbakuClub_Slaves_Random4 == 9) || (C101_KinbakuClub_Slaves_Random5 == 9) || (C101_KinbakuClub_Slaves_Random6 == 9) || (C101_KinbakuClub_Slaves_Random7 == 9) || (C101_KinbakuClub_Slaves_Random8 == 9)) C101_KinbakuClub_Slaves_Option9 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 10) || (C101_KinbakuClub_Slaves_Random2 == 10) || (C101_KinbakuClub_Slaves_Random3 == 10) || (C101_KinbakuClub_Slaves_Random4 == 10) || (C101_KinbakuClub_Slaves_Random5 == 10) || (C101_KinbakuClub_Slaves_Random6 == 10) || (C101_KinbakuClub_Slaves_Random7 == 10) || (C101_KinbakuClub_Slaves_Random8 == 10)) C101_KinbakuClub_Slaves_Option10 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 11) || (C101_KinbakuClub_Slaves_Random2 == 11) || (C101_KinbakuClub_Slaves_Random3 == 11) || (C101_KinbakuClub_Slaves_Random4 == 11) || (C101_KinbakuClub_Slaves_Random5 == 11) || (C101_KinbakuClub_Slaves_Random6 == 11) || (C101_KinbakuClub_Slaves_Random7 == 11) || (C101_KinbakuClub_Slaves_Random8 == 11)) C101_KinbakuClub_Slaves_Option11 = true;
-		if ((C101_KinbakuClub_Slaves_Random1 == 12) || (C101_KinbakuClub_Slaves_Random2 == 12) || (C101_KinbakuClub_Slaves_Random3 == 12) || (C101_KinbakuClub_Slaves_Random4 == 12) || (C101_KinbakuClub_Slaves_Random5 == 12) || (C101_KinbakuClub_Slaves_Random6 == 12) || (C101_KinbakuClub_Slaves_Random7 == 12) || (C101_KinbakuClub_Slaves_Random8 == 12)) C101_KinbakuClub_Slaves_Option12 = true;
+	// Select 8 random numbers, each between 1 and 12
+	var randomNumbers = []
+	for (var i = 0; i < 8; i++) {
+		randomNumbers.push(Math.floor((Math.random() * 12) + 1));
 	}
+	
+	var active = C101_KinbakuClub_Slaves_PlayerArousal < 500;
+	
+	C101_KinbakuClub_Slaves_Option1 = active && randomNumbers.includes(1) ? true : false;
+	C101_KinbakuClub_Slaves_Option2 = active && randomNumbers.includes(2) ? true : false;
+	C101_KinbakuClub_Slaves_Option3 = active && randomNumbers.includes(3) ? true : false;
+	C101_KinbakuClub_Slaves_Option4 = active && randomNumbers.includes(4) ? true : false;
+	C101_KinbakuClub_Slaves_Option5 = active && randomNumbers.includes(5) ? true : false;
+	C101_KinbakuClub_Slaves_Option6 = active && randomNumbers.includes(6) ? true : false;
+	C101_KinbakuClub_Slaves_Option7 = active && randomNumbers.includes(7) ? true : false;
+	C101_KinbakuClub_Slaves_Option8 = active && randomNumbers.includes(8) ? true : false;
+	C101_KinbakuClub_Slaves_Option9 = active && randomNumbers.includes(9) ? true : false;
+	C101_KinbakuClub_Slaves_Option10 = active && randomNumbers.includes(10) ? true : false;
+	C101_KinbakuClub_Slaves_Option11 = active && randomNumbers.includes(11) ? true : false;
+	C101_KinbakuClub_Slaves_Option12 = active && randomNumbers.includes(12) ? true : false;
+	
 	C101_KinbakuClub_Slaves_TextDisplay()
 	C101_KinbakuClub_Slaves_CalcParams();
 }

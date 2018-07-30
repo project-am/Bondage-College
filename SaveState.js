@@ -68,7 +68,6 @@ function SaveState(SlotNumber) {
 	localStorage.setItem("Actor" + SN, JSON.stringify(Actor));
 	localStorage.setItem("GameLog" + SN, JSON.stringify(GameLog));
 	localStorage.setItem("CurrentTime" + SN, CurrentTime.toString());
-	localStorage.setItem("Common_ClubStatus" + SN, Common_ClubStatus);
 
 	// Reload the summaries
 	CurrentStage[1][StageInteractionText] = "@Slot 1";
@@ -89,14 +88,17 @@ function LoadState(SlotNumber) {
 			CurrentScreen = localStorage.getItem("CurrentScreen" + SN);
 			Common_PlayerName = localStorage.getItem("Common_PlayerName" + SN);
 			Common_PlayerOwner = localStorage.getItem("Common_PlayerOwner" + SN);
-			Common_PlayerOwner = localStorage.getItem("Common_PlayerLover" + SN);
+			Common_PlayerLover = localStorage.getItem("Common_PlayerLover" + SN);
 			PlayerInventory = JSON.parse(localStorage.getItem("PlayerInventory" + SN));
 			PlayerLockedInventory = JSON.parse(localStorage.getItem("PlayerLockedInventory" + SN));
 			Actor = JSON.parse(localStorage.getItem("Actor" + SN));
 			GameLog = JSON.parse(localStorage.getItem("GameLog" + SN));
 			PlayerSkill = JSON.parse(localStorage.getItem("PlayerSkill" + SN));
-			CurrentTime = parseFloat(localStorage.getItem("CurrentTime" + SN));			
-			Common_ClubStatus = localStorage.getItem("Common_ClubStatus" + SN);
+			CurrentTime = parseFloat(localStorage.getItem("CurrentTime" + SN));
+			
+			// Makes sure the owner and lover aren't null from previous saves
+			if (Common_PlayerOwner == null) Common_PlayerOwner = "";
+			if (Common_PlayerLover == null) Common_PlayerLover = "";
 
 			// You can start with different clothes on chapter 12
 			if (CurrentChapter == "C012_AfterClass") {
@@ -104,6 +106,16 @@ function LoadState(SlotNumber) {
 				if (Common_PlayerCloth == null) Common_PlayerCloth = "Clothed";	
 				PlayerClothes(Common_PlayerCloth);
 			}
+
+			// Make sure the actor array is wide enough (to remove when save games will be reset)
+			for (var A = 0; L < Actor.length; A++)
+				if (Actor[L].length < 11)
+					Actor[L] = [Actor[L][0], Actor[L][1], Actor[L][2], Actor[L][3], Actor[L][4], Actor[L][5], Actor[L][6], Actor[L][7], Actor[L][8], false, ""];
+
+			// Make sure the game log array is wide enough (to remove when save games will be reset) 
+			for (var L = 0; L < GameLog.length; L++)
+				if (GameLog[L].length < 4)
+					GameLog[L] = [GameLog[L][0], GameLog[L][1], GameLog[L][2], 0];
 
 			// Starts the game
 			LoadRestrainStatus();
