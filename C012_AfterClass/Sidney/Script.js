@@ -17,11 +17,14 @@ var C012_AfterClass_Sidney_PleasurePlayerSpeed = 0;
 var C012_AfterClass_Sidney_MasturbateCount = 0;
 var C012_AfterClass_Sidney_CanSetCurfew22 = false;
 var C012_AfterClass_Sidney_AllowBlackLingerie = false;
+var C012_AfterClass_Sidney_AllowPigCostume = false;
 var C012_AfterClass_Sidney_AllowSexAfterDate = false;
+var C012_AfterClass_Sidney_AmandaIsOwner = false;
+var C012_AfterClass_Sidney_CanKickOut = false;
 
 // Sidney can only check her cell phone if she's dressed
 function C012_AfterClass_Sidney_CheckCellPhone() {
-	if (ActorGetValue(ActorCloth) == "Shorts") ActorSetPose("CheckCellPhone");
+	if ((ActorGetValue(ActorCloth) == "Shorts") || (ActorGetValue(ActorCloth) == "BlackLingerie")) ActorSetPose("CheckCellPhone");
 	LeaveIcon = "Leave";
 }
 
@@ -36,15 +39,18 @@ function C012_AfterClass_Sidney_SetPose() {
 		if ((Love <= -10) && (Math.abs(Love) >= Math.abs(Sub))) ActorSetPose("Mad");
 		if (Common_ActorIsOwned) ActorSetPose("Shy");
 	} else {
-		if ((ActorGetValue(ActorCloth) == "Naked") && !ActorIsRestrained() && !ActorIsGagged() && (ActorGetValue(ActorSubmission) >= 10)) ActorSetPose("Shy");
-		if ((ActorGetValue(ActorCloth) == "BlackLingerie") && !ActorIsRestrained() && !ActorIsGagged() && (ActorGetValue(ActorLove) >= 10)) ActorSetPose("Happy");
-		else ActorSetPose("");
+		if ((ActorGetValue(ActorPose) != "Pig") || !ActorHasInventory("TwoRopes")) {
+			ActorSetPose("");
+			if ((ActorGetValue(ActorCloth) == "Naked") && !ActorIsRestrained() && !ActorIsGagged() && (ActorGetValue(ActorSubmission) >= 10)) ActorSetPose("Shy");
+			if ((ActorGetValue(ActorCloth) == "BlackLingerie") && !ActorIsRestrained() && !ActorIsGagged() && (ActorGetValue(ActorLove) >= 10) && (ActorGetValue(ActorLove) > ActorGetValue(ActorSubmission))) ActorSetPose("Happy");
+			if ((ActorGetValue(ActorCloth) == "BlackLingerie") && !ActorIsRestrained() && !ActorIsGagged() && (ActorGetValue(ActorSubmission) >= 10) && (ActorGetValue(ActorLove) <= ActorGetValue(ActorSubmission))) ActorSetPose("Point");
+			if ((ActorGetValue(ActorCloth) == "BlackLingerie") && !ActorIsRestrained() && !ActorIsGagged() && (Common_ActorIsOwner)) ActorSetPose("Point");
+		}
 	}
 }
 
 // Calculate the scene parameters
 function C012_AfterClass_Sidney_CalcParams() {
-	C012_AfterClass_Sidney_AllowBlackLingerie = GameLogQuery(CurrentChapter, CurrentActor, "AllowBlackLingerie");
 	C012_AfterClass_Sidney_HasEgg = ActorHasInventory("VibratingEgg");
 	C012_AfterClass_Sidney_HasBelt = ActorHasInventory("ChastityBelt");
 	C012_AfterClass_Sidney_IsGagged = ActorIsGagged();	
@@ -52,8 +58,13 @@ function C012_AfterClass_Sidney_CalcParams() {
 	C012_AfterClass_Sidney_IsStrapped = ActorHasInventory("Armbinder");
 	C012_AfterClass_Sidney_PusherDealAvail = (!C012_AfterClass_Sidney_HasBelt && PlayerHasInventory("ChastityBelt") && GameLogQuery(CurrentChapter, "", "DebtChastityBelt") && !GameLogQuery(CurrentChapter, "", "DebtChastityBeltDone"));
 	C012_AfterClass_Sidney_PleasurePlayerAvail = (!Common_PlayerChaste && !ActorIsGagged() && !ActorIsRestrained() && Common_ActorIsOwned && !GameLogQuery(CurrentChapter, "Player", "NextPossibleOrgasm"));
-	C012_AfterClass_Sidney_SexAvail = (!Common_PlayerRestrained && !Common_PlayerChaste && !GameLogQuery(CurrentChapter, "Player", "NextPossibleOrgasm") && !GameLogQuery(CurrentChapter, "Sidney", "NextPossibleOrgasm"));
+	C012_AfterClass_Sidney_SexAvail = (!Common_PlayerRestrained && !Common_PlayerChaste && !GameLogQuery(CurrentChapter, "Player", "NextPossibleOrgasm") && !GameLogQuery(CurrentChapter, "Sidney", "NextPossibleOrgasm") && !GameLogQuery(CurrentChapter, "Player", "AmandaAndSarahInBed"));
+	if (GameLogQuery(CurrentChapter, "", "EventBlockChanging") && (C012_AfterClass_Dorm_Guest.indexOf(Common_PlayerOwner) >= 0) && !Common_PlayerNaked) C012_AfterClass_Sidney_SexAvail = false;
 	C012_AfterClass_Sidney_CanMasturbate = (!Common_PlayerRestrained && !C012_AfterClass_Sidney_HasBelt && (ActorGetValue(ActorCloth) == "Naked"));	
+	C012_AfterClass_Sidney_CanKickOut = (!Common_ActorIsOwner && !Common_ActorIsLover);
+	C012_AfterClass_Sidney_AmandaIsOwner = (Common_PlayerOwner == "Amanda");
+	C012_AfterClass_Sidney_AllowBlackLingerie = GameLogQuery(CurrentChapter, CurrentActor, "AllowBlackLingerie");
+	C012_AfterClass_Sidney_AllowPigCostume = (GameLogQuery(CurrentChapter, CurrentActor, "AllowPigCostume") && !Common_PlayerRestrained);
 	C012_AfterClass_Sidney_SetPose();
 }
 
@@ -64,10 +75,11 @@ function C012_AfterClass_Sidney_Load() {
 	LoadInteractions();
 	ActorLoad("Sidney", "Dorm");
 	Common_PlayerPose = "";
+	if (C012_AfterClass_Sidney_CurrentStage == 3915) Common_PlayerPose = "TwoRopesPunishment";
 	
 	// At stage 400, Sidney is leaving
 	if (C012_AfterClass_Sidney_CurrentStage == 400) { ActorUngag(); LeaveIcon = ""; }
-	
+
 	// Sidney's parameters
 	C012_AfterClass_Sidney_CalcParams();	
 	C012_AfterClass_Sidney_ChatAvail = !GameLogQuery(CurrentChapter, CurrentActor, "ChatDone");
@@ -82,16 +94,33 @@ function C012_AfterClass_Sidney_Load() {
 	} else {
 		
 		// If the player is grounded
-		if (GameLogQuery(CurrentChapter, CurrentActor, "EventGrounded")) {
+		if (GameLogQuery(CurrentChapter, "", "EventGrounded")) {
 			
 			// Skip to the punishment end phase, no talking while being grounded
 			C012_AfterClass_Sidney_AllowLeave();
 			C012_AfterClass_Sidney_CurrentStage = 3999;
-			Common_PlayerPose = "TwoRopesPunishment";
-			OverridenIntroText = GetText("StillGrounded");
+			C012_AfterClass_Dorm_SetPunishmentPose();
 
 		} else {
 
+			// If there's a crossover between two actors
+			if ((C012_AfterClass_Sidney_CurrentStage == 0) && !GameLogQuery(CurrentChapter, CurrentActor, "MetSarah") && (C012_AfterClass_Dorm_Guest.indexOf("Sarah") >= 0) && !Common_PlayerRestrained && !Common_PlayerGagged && !ActorIsGagged() && !ActorIsRestrained()) {
+				LeaveIcon = "";
+				if ((ActorGetValue(ActorCloth) == "Shorts") && !Common_ActorIsOwned) ActorSetPose("Point");
+				else ActorSetPose("");
+				C012_AfterClass_Sidney_CurrentStage = 710;
+				GameLogAdd("MetSarah");
+			}
+
+			// If there's a crossover between two actors
+			if ((C012_AfterClass_Sidney_CurrentStage == 0) && !GameLogQuery(CurrentChapter, CurrentActor, "MetAmanda") && (C012_AfterClass_Dorm_Guest.indexOf("Amanda") >= 0) && !Common_PlayerRestrained && !Common_PlayerGagged && !ActorIsGagged() && !ActorIsRestrained()) {
+				LeaveIcon = "";
+				if ((ActorGetValue(ActorCloth) == "Shorts") && !Common_ActorIsOwned) ActorSetPose("Point");
+				else ActorSetPose("");
+				C012_AfterClass_Sidney_CurrentStage = 700;
+				GameLogAdd("MetAmanda");
+			}
+		
 			// A random event can be triggered when Sidney is clicked on
 			if (C012_AfterClass_Sidney_CurrentStage == 0)
 				if ((CurrentText != null) && (Math.floor(Math.random() * 8) == 0)) {
@@ -119,9 +148,12 @@ function C012_AfterClass_Sidney_Run() {
 	// The curfew 22 option isn't available after 22
 	C012_AfterClass_Sidney_CanSetCurfew22 = (CurrentTime < 22 * 60 * 60 * 1000);
 	BuildInteraction(C012_AfterClass_Sidney_CurrentStage);
-	
+
+	// Draw the watching actors for ceremonies
+	if (((C012_AfterClass_Sidney_CurrentStage >= 340) && (C012_AfterClass_Sidney_CurrentStage < 400)) || ((C012_AfterClass_Sidney_CurrentStage >= 291) && (C012_AfterClass_Sidney_CurrentStage < 300))) C012_AfterClass_Dorm_DrawOtherActors();
+
 	// Draw the actor alone or with the player depending on the stage
-	if ((C012_AfterClass_Sidney_CurrentStage != 410) && (C012_AfterClass_Sidney_CurrentStage != 3931) && (C012_AfterClass_Sidney_CurrentStage != 3932) && (C012_AfterClass_Sidney_CurrentStage != 3933) && (C012_AfterClass_Sidney_CurrentStage != 632) && (C012_AfterClass_Sidney_CurrentStage != 633) && (C012_AfterClass_Sidney_CurrentStage != 634) && (C012_AfterClass_Sidney_CurrentStage != 662) && (C012_AfterClass_Sidney_CurrentStage != 663)) {
+	if ((C012_AfterClass_Sidney_CurrentStage != 410) && (C012_AfterClass_Sidney_CurrentStage != 3931) && (C012_AfterClass_Sidney_CurrentStage != 3932) && (C012_AfterClass_Sidney_CurrentStage != 3933) && (C012_AfterClass_Sidney_CurrentStage != 632) && (C012_AfterClass_Sidney_CurrentStage != 633) && (C012_AfterClass_Sidney_CurrentStage != 634) && (C012_AfterClass_Sidney_CurrentStage != 662) && (C012_AfterClass_Sidney_CurrentStage != 663) && (C012_AfterClass_Sidney_CurrentStage != 791) && (C012_AfterClass_Sidney_CurrentStage != 194)) {
 		if (((C012_AfterClass_Sidney_CurrentStage >= 3090) && (C012_AfterClass_Sidney_CurrentStage <= 3099)) || ((C012_AfterClass_Sidney_CurrentStage >= 3901) && (C012_AfterClass_Sidney_CurrentStage <= 3999))) {
 			DrawActor("Player", 475, 0, 1);
 			DrawActor(CurrentActor, 750, 0, 1);
@@ -360,7 +392,7 @@ function C012_AfterClass_Sidney_ForceChangePlayer(NewCloth) {
 function C012_AfterClass_Sidney_ForceRandomBondage(BondageType) {
 	if ((BondageType == "Full") || (BondageType == "Gag")) {
 		PlayerRandomGag();
-		if (!Common_PlayerGagged) OverridenIntroText = GetText("CantFindRestrain");
+		if (!Common_PlayerGagged && (BondageType == "Gag")) OverridenIntroText = GetText("CantFindRestrain");
 	}
 	if ((BondageType == "Full") || (BondageType == "Restrain")) {
 		PlayerRandomRestrain();
@@ -372,24 +404,32 @@ function C012_AfterClass_Sidney_ForceRandomBondage(BondageType) {
 // Chapter 12 After Class - Sidney can unbind the player on some events
 function C012_AfterClass_Sidney_TestUnbind() {
 
-	// Before the next event time, she will always refuse (skip is owned)
-	if (!GameLogQuery(CurrentChapter, CurrentActor, "EventGeneric") || Common_ActorIsOwned) {
-		
-		// Check if the event succeeds randomly (skip is owned)
-		if (EventRandomChance("Love") || Common_ActorIsOwned) {
-			
-			// Can only release if not restrained
-			if (!ActorIsRestrained()) {
-				if (ActorIsGagged()) OverridenIntroText = GetText("ReleasePlayerGagged");
-				else OverridenIntroText = GetText("ReleasePlayer");				
-				PlayerReleaseBondage();
-				CurrentTime = CurrentTime + 50000;
-			} else OverridenIntroText = GetText("CannotReleasePlayer");
-			
-		} else EventSetGenericTimer();
-		
+	// Bound and gagged, there's not much she can do
+	if (ActorIsGagged() && ActorIsRestrained()) {
+		C012_AfterClass_Sidney_GaggedAnswer();
 	}
-	
+	else {
+
+		// Before the next event time, she will always refuse (skip is owned)
+		if (!GameLogQuery(CurrentChapter, CurrentActor, "EventGeneric") || Common_ActorIsOwned) {
+			
+			// Check if the event succeeds randomly (skip is owned)
+			if (EventRandomChance("Love") || Common_ActorIsOwned) {
+				
+				// Can only release if not restrained
+				if (!ActorIsRestrained()) {
+					if (ActorIsGagged()) OverridenIntroText = GetText("ReleasePlayerGagged");
+					else OverridenIntroText = GetText("ReleasePlayer");				
+					PlayerReleaseBondage();
+					CurrentTime = CurrentTime + 50000;
+				} else OverridenIntroText = GetText("CannotReleasePlayer");
+				
+			} else EventSetGenericTimer();
+
+		}
+
+	}
+
 }
 
 // Chapter 12 After Class - When the player disobey, she can get punished
@@ -526,9 +566,9 @@ function C012_AfterClass_Sidney_InsertEgg() {
 	CurrentTime = CurrentTime + 50000;
 }
 
-// Chapter 12 After Class - Ends the punishment and sets the duration between 30 minutes and 2 hours
+// Chapter 12 After Class - Ends the punishment and sets the duration between 30 minutes and 1.5 hours
 function C012_AfterClass_Sidney_EndPunishment(PunishmentType) {
-	GameLogAddTimer("Event" + PunishmentType, CurrentTime + 1800000 + Math.floor(Math.random() * 5400000));
+	GameLogAddTimer("Event" + PunishmentType, CurrentTime + 1800000 + Math.floor(Math.random() * 3600000));
 	EventSetGenericTimer();
 	C012_AfterClass_Sidney_AllowLeave();
 }
@@ -544,10 +584,13 @@ function C012_AfterClass_Sidney_ReleasePlayer() {
 
 // Chapter 12 After Class - Flags the chat as done and doesn't allow the player to leave
 function C012_AfterClass_Sidney_StartChat() {
-	ActorSetPose("");
-	GameLogAdd("ChatDone");
-	LeaveIcon = "";
-	C012_AfterClass_Sidney_ChatAvail = false;
+	if (!ActorIsGagged()) {
+		ActorSetPose("");
+		C012_AfterClass_Sidney_CurrentStage = 500;
+		GameLogAdd("ChatDone");
+		LeaveIcon = "";
+		C012_AfterClass_Sidney_ChatAvail = false;
+	} else C012_AfterClass_Sidney_GaggedAnswer();
 }
 
 // Chapter 12 After Class - Ends the chat with Sidney
@@ -615,7 +658,7 @@ function C012_AfterClass_Sidney_TestEnslaveSidney() {
 		else if (ActorGetValue(ActorCloth) == "Naked") { C012_AfterClass_Sidney_CurrentStage = 291; ActorSetPose("Shy"); }
 		else C012_AfterClass_Sidney_CurrentStage = 290;
 		OverridenIntroText = GetText("AcceptCollar");
-	} else LeaveIcon = "";
+	} else LeaveIcon = "Leave";
 }
 
 // Chapter 12 After Class - When the player gives up on enslaving Sidney
@@ -652,6 +695,7 @@ function C012_AfterClass_Sidney_Ungag() {
 // Chapter 12 After Class - Sidney can be untied
 function C012_AfterClass_Sidney_Untie() {
 	ActorUntie();
+	if (ActorGetValue(ActorPose) == "Pig") ActorSetPose("");
 	C012_AfterClass_Sidney_CalcParams();
 	CurrentTime = CurrentTime + 50000;
 }
@@ -677,14 +721,6 @@ function C012_AfterClass_Sidney_SetCurfew(CurfewType) {
 // Chapter 12 After Class - The player can decide how Sidney will spend her evening
 function C012_AfterClass_Sidney_BackToDorm() {
 	SetScene(CurrentChapter, "Dorm");
-}
-
-// Chapter 12 After Class - Many parts of Sidney interactions are not accessible if she's gagged
-function C012_AfterClass_Sidney_TestGagged() {
-	if (C012_AfterClass_Sidney_IsGagged) {
-		C012_AfterClass_Sidney_GaggedAnswer();
-		C012_AfterClass_Sidney_CurrentStage = 0;
-	}
 }
 
 // Chapter 12 After Class - Sidney will accept the chastity belt deal if she's not too dominant (-5 and up)
@@ -900,10 +936,10 @@ function C012_AfterClass_Sidney_TestGoOnDate() {
 	} else C012_AfterClass_Sidney_GaggedAnswer();	
 }
 
-// Chapter 12 After Class - Test if the player can start the break up dialog
-function C012_AfterClass_Sidney_TestTalkBreakUp() {
+// Chapter 12 After Class - Test if the player can start the serious dialog
+function C012_AfterClass_Sidney_TestTalk() {
 	if (!ActorIsGagged()) {
-		if (!ActorIsRestrained()) C012_AfterClass_Sidney_CurrentStage = 190;
+		if (!ActorIsRestrained()) C012_AfterClass_Sidney_CurrentStage = 20;
 		else OverridenIntroText = GetText("ReleaseBeforeTalk");
 	} else C012_AfterClass_Sidney_GaggedAnswer();	
 }
@@ -944,4 +980,62 @@ function C012_AfterClass_Sidney_UnlockBlackLingerie() {
 	GameLogAdd("AllowBlackLingerie");
 	LeaveIcon = "Leave";
 	C012_AfterClass_Sidney_AllowBlackLingerie = true;
+}
+
+// Chapter 12 After Class - When Sidney forces the player to kick someone out
+function C012_AfterClass_Sidney_KickActor(KickedActor) {
+	if (KickedActor == "Amanda") C012_AfterClass_Amanda_CurrentStage = 790;
+	if (KickedActor == "Sarah") C012_AfterClass_Sarah_CurrentStage = 790;
+	SetScene(CurrentChapter, KickedActor);
+}
+
+// Chapter 12 After Class - When Sidney is kicked for another actor
+function C012_AfterClass_Sidney_KickForActor(KickedForActor) {
+	ActorSpecificChangeAttitude(KickedForActor, 2, 1);
+}
+
+// Chapter 12 After Class - When Sidney is kicked out, it can destroy the players couple
+function C012_AfterClass_Sidney_KickedOut() {
+	GameLogAdd("KickedOutFromDorm");
+	if (CurrentActor == Common_PlayerLover) {
+		ActorChangeAttitude(-5, 0);
+		C012_AfterClass_Sidney_BreakUp();
+	}
+	CurrentActor = "";
+}
+
+// Chapter 12 After Class - When Sidney changes back to her short to spank the player
+function C012_AfterClass_Sidney_ChangeBackToShort() {
+	if (ActorGetValue(ActorCloth) != "Shorts") {
+		ActorSetCloth("Shorts");
+		CurrentTime = CurrentTime + 50000;
+		OverridenIntroText = GetText("SpankInShorts");
+	}
+}
+
+// Chapter 12 After Class - Sidney can only wear the pig costume when she's in 2 or 3 ropes
+function C012_AfterClass_Sidney_TestPigCostume() {
+
+	// Only works if naked
+	if (ActorGetValue(ActorCloth) == "Naked") {
+
+		// Give back one rope if there's three
+		if (ActorHasInventory("ThreeRopes")) {
+			ActorRemoveInventory("ThreeRopes");
+			ActorAddInventory("TwoRopes");
+			PlayerAddInventory("Rope", 1);
+		}
+
+		// Allow the pig costume if she's tied up with two ropes
+		if (ActorHasInventory("TwoRopes")) {
+			ActorSetPose("Pig");
+			CurrentTime = CurrentTime + 50000;
+			if (!GameLogQuery(CurrentChapter, "Sidney", "Pig")) {
+				OverridenIntroText = GetText("ForcePigCostumePicture");
+				GameLogAdd("Pig");
+			} else OverridenIntroText = GetText("ForcePigCostume");
+		}
+	
+	}
+
 }

@@ -150,6 +150,7 @@ function DrawActorStats(Left, Top) {
 	if (CurrentActor == Common_PlayerLover) DrawImage("Icons/Lover.png", Left - 110, Top);
 	else DrawImage("Icons/Heart.png", Left - 110, Top);
 	if (ActorGetValue(ActorOwner) == "Player") DrawImage("Icons/Collared.png", Left - 10, Top);
+	else if (CurrentActor == Common_PlayerOwner) DrawImage("Icons/Owner.png", Left - 10, Top);
 	else DrawImage("Icons/Submission.png", Left - 10, Top);
 	DrawImage("Icons/Orgasm.png", Left + 90, Top);
 	DrawImage("Icons/Bondage.png", Left + 190, Top);
@@ -412,7 +413,7 @@ function DrawGetPlayerImageName(IncludePose) {
 
 	// Third part is the collar, which only shows for certain clothes
 	var ImageCollar = "";
-	if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Tennis") || (ImageCloth == "Judo") || (ImageCloth == "RedBikini")) {
+	if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Tennis") || (ImageCloth == "Judo") || (ImageCloth == "RedBikini") || (ImageCloth == "BrownDress")) {
 		if (PlayerHasLockedInventory("Collar")) ImageCollar = "_Collar";
 		else ImageCollar = "_NoCollar";
 	}

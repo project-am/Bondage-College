@@ -14,6 +14,7 @@ Stage,LoveReq,SubReq,VarReq,IntroText,Image
 0,0,0,IsStrapped,(She struggles.)  This is way too tight.|Can you help me out of that thing?,Dorm.jpg
 0,0,0,IsGagged,Haamh nh g gna!,Dorm.jpg
 10,0,0,,,Dorm.jpg
+20,0,0,,,Dorm.jpg
 100,0,0,,(She blushes)  Thanks.|You also look wonderful.,Dorm.jpg
 100,0,0,Common_ActorIsOwned,(She blushes.)  Thanks Mistress.|You also look fabulous tonight.,Dorm.jpg
 100,0,0,Common_ActorIsOwner,Thanks my little bitch.|You also look wonderful.,Dorm.jpg
@@ -54,7 +55,6 @@ Stage,LoveReq,SubReq,VarReq,IntroText,Image
 295,0,0,,,Dorm.jpg
 296,0,0,,,Dorm.jpg
 297,0,0,,,Dorm.jpg
-298,0,0,,,Dorm.jpg
 300,0,0,,"I know you do, but you're going to get|crushed if you keep acting that way.",Dorm.jpg
 300,0,0,Common_ActorIsLover,"I know sweetheart, but you're going to get|eaten alive if you keep acting that way.",Dorm.jpg
 310,0,0,,,Dorm.jpg
@@ -112,6 +112,21 @@ Stage,LoveReq,SubReq,VarReq,IntroText,Image
 665,0,0,,,Dorm.jpg
 670,0,0,,"My lovely bitch, I feel like wearing my|lingerie for you.  Would you like that?",Dorm.jpg
 671,0,0,,,Dorm.jpg
+700,0,0,,What is she doing here?|(She points at Amanda.),Dorm.jpg
+700,0,0,Common_ActorIsLover,"Sweetie, what is she doing here?|(She points at Amanda.)",Dorm.jpg
+700,0,0,Common_ActorIsOwned,"Mistress, what is she doing here?|(She points at Amanda.)",Dorm.jpg
+700,0,0,Common_ActorIsOwner,"Bitch, what is she doing here?|(She points at Amanda.)",Dorm.jpg
+701,0,0,,,Dorm.jpg
+702,0,0,,,Dorm.jpg
+710,0,0,,What the fuck is she doing here?|(She stares at you and points at Sarah.),Dorm.jpg
+710,0,0,Common_ActorIsLover,"Sweetie, what is she doing here?|(She points at Sarah.)",Dorm.jpg
+710,0,0,Common_ActorIsOwned,"Mistress, what is she doing here?|(She points at Sarah.)",Dorm.jpg
+710,0,0,Common_ActorIsOwner,"Bitch, what the fuck is she doing here?|(She stares at you and points at Sarah.)",Dorm.jpg
+711,0,0,,,Dorm.jpg
+712,0,0,,,Dorm.jpg
+790,0,0,,You're kicking me out|of your fucking dorm?,Door.jpg
+790,0,0,Common_ActorIsLover,You're fucking kicking me out?|That's the end of our shitty love?,StopDating.jpg
+791,0,0,,,Door.jpg
 3000,0,0,,"My bitch, I want you to get naked.",Dorm.jpg
 3000,0,0,Common_ActorIsLover,My sweet little bitch.|I want you to get naked.,Dorm.jpg
 3010,0,0,,"My bitch, I want to see|you in your underwear.",Dorm.jpg
@@ -126,9 +141,9 @@ Stage,LoveReq,SubReq,VarReq,IntroText,Image
 3091,0,0,,"(She nods and smiles.)  I like you like that.|Actually, you're not allowed to change anymore.",Dorm.jpg
 3091,0,0,Common_ActorIsLover,"(She nods and smiles.)  You look great sweetie.|Actually, you're not allowed to change anymore.",Dorm.jpg
 3092,0,0,,,Dorm.jpg
-3100,0,0,,"My bitch, I want to check your items|so I can bind and gag your ass.",Dorm.jpg
-3110,0,0,,"My bitch, I want to check your items|so I can put your ass in bondage.",Dorm.jpg
-3120,0,0,,"My bitch, I want to check your items|so I can gag your fucking face.",Dorm.jpg
+3100,0,0,,"My bitch, I want to check your items,|so I can bind and gag your ass.",Dorm.jpg
+3110,0,0,,"My bitch, I want to check your items,|so I can put your ass in bondage.",Dorm.jpg
+3120,0,0,,"My bitch, I want to check your items,|so I can gag your fucking face.",Dorm.jpg
 3130,0,0,,"My bitch, I guess I can help you.|(She releases you and laughs.)",Dorm.jpg
 3140,0,0,,A fucking bitch should not|have keys.  I'll take them.,Dorm.jpg
 3150,0,0,,"Why the hell do you carry a crop?|This is not for you, I'll take it.",Dorm.jpg
@@ -138,13 +153,11 @@ Stage,LoveReq,SubReq,VarReq,IntroText,Image
 3162,0,0,,,Dorm.jpg
 3190,0,0,,,Dorm.jpg
 3191,0,0,,,Dorm.jpg
-3200,0,0,,I have a question for you.|Are you fucking ticklish?,Dorm.jpg
-3201,0,0,,,Dorm.jpg
 3210,0,0,,"Admit it my bitch, you want|to be slapped fucking hard!",Dorm.jpg
 3211,0,0,,,Dorm.jpg
 3220,0,0,,"Bitch, you know that this pussy is mine?|(She smiles and points at your crotch.)",Dorm.jpg
 3221,0,0,,,Dorm.jpg
-3222,0,0,,(She masturbates and you feel like you're about|to climax.)   Does my little slut want to cum now?,Dorm.jpg
+3222,0,0,,"(She masturbates, and you feel like you're about|to climax.)   Does my little slut want to cum now?",Dorm.jpg
 3223,0,0,,,DormOrgasm.jpg
 3230,0,0,,I've been itching to use|this crop on your ass.,Dorm.jpg
 3231,0,0,,,Dorm.jpg

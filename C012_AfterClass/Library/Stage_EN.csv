@@ -27,7 +27,7 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 140,0,0,Common_PlayerChaste,"I'm sorry, I can't.|I'm also locked.",I guess we can understand each other.|You can study here with me if you want.,200,1,-1,
 140,0,0,,I can't unlock it.,"Fine, I'll find a good locksmith.|You can study here if you want.",200,0,0,
 140,0,0,,Being chaste will help|you to concentrate.,What?   I...  But...  But...  Fine...|You can study with me if you want.,200,0,1,
-140,0,0,,If you're a good|girl I'll unlock you.,(She blushes.)  I'll be good then.|You can study with me if you want.,200,1,-1,
+140,0,0,,"If you're a good|girl, I'll unlock you.",(She blushes.)  I'll be good then.|You can study with me if you want.,200,1,-1,
 140,0,0,,A slut needs|to be locked.,Why are you so mean?  Anyway.|You can study here if you want.,200,-1,1,
 140,0,0,,Talking about such|belts turns me on.,You're so kinky COMMON_PLAYERNAME.|You can study with me if you want.,200,0,-1,
 150,0,0,HasEgg,"I have one also, it's|fun, don't remove it.",(She giggles.)  You're very kinky.|You can study with me if you want.,200,1,-1,
@@ -51,17 +51,21 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 180,0,0,,So you like seeing|a teacher restrained?,"(She blushes and nods.)  Yes, it was fun.|You can study here with me if you want.",200,1,0,
 180,0,0,,Now I kind|of regret it.,Don't!  It was quite memorable.|You can study with me if you want.,200,0,-1,
 180,0,0,,It was memorable.,"Yes, it should be in the yearbook.|You can study with me if you want.",200,0,0,
-190,0,0,,It was ok.,Alright.  You can study with me if you want.,200,0,0,
-190,0,0,,I learned a lot.,Great!  We have such wonderful teachers.|You can study here with me if you want.,200,1,0,
-190,0,0,,I was bored|out of my mind.,I'm very sorry to hear that.|You can study here if you want.,200,-1,0,
-190,0,0,,"Yep, I caused|plenty of trouble.",(She nods politely.)  Very well.|You can study here if you want.,200,0,1,
-190,0,0,,I didn't made|any friends.,"Poor girl, I'm sure you will soon.|You can study with me if you want.",200,0,-1,
+190,0,0,,It was ok.,Alright.  And who's your favorite teacher?,191,0,0,
+190,0,0,,I learned a lot.,We do have great teachers.|Who's your favorite?,191,1,0,
+190,0,0,,I was bored|out of my mind.,I'm very sorry to hear that.|Did you like one of the teachers?,191,-1,0,
+190,0,0,,"Yep, I caused|plenty of trouble.",(She nods politely.)  Very well.|And who's your favorite teacher?,191,0,1,
+190,0,0,,I didn't make|any friends.,"Poor girl, I'm sure you will soon.|Did you like one of the teachers?",191,0,-1,
+191,0,0,,Mildred.,"Yes, Miss Mildred is strict but fair.|You can study here if you want.",200,0,1,
+191,0,0,,Yuki.,"Nice, I've met her here a few times.|You can study with me if you want.",200,0,0,
+191,0,0,,Julia.,Great!  Miss Julia is funny and lively.|You can study with me if you want.,200,1,0,
+191,0,0,,I don't know.,Don't be so shy girl.|You can study with me.,200,0,-1,
 200,0,0,,Let's study together.,(You and Amanda start|to study together.),300,0,0,StartStudy()
 200,0,0,,(Open your books.),(You and Amanda start|to study together.),300,0,0,StartStudy()
-200,0,0,,What are you|studying now?,My homework is done so|I'm reviewing future classes.,205,0,0,AmandaIntroDone()
-200,0,0,,(Spy in her book.),(She seems to be studying|for future math classes.),205,0,0,AmandaIntroDone()
-200,0,0,,Studying is boring.,Why are you here then?|What would you like to do?,210,0,0,AmandaIntroDone()
-200,0,0,,We should do|something else.,Oh!  What would you like to do?,210,0,0,AmandaIntroDone()
+200,0,0,,What are you|studying now?,My homework is done so|I'm reviewing future classes.,205,0,0,
+200,0,0,,(Spy in her book.),(She seems to be studying|for future math classes.),205,0,0,
+200,0,0,,Studying is boring.,Why are you here then?|What would you like to do?,210,0,0,
+200,0,0,,We should do|something else.,Oh!  What would you like to do?,210,0,0,
 200,0,0,,I need to go.|(Leave the library.),,200,0,0,Leave()
 205,0,0,,Let's study together.,(You and Amanda start|to study together.),300,0,0,StartStudy()
 205,0,0,,You're already|so far ahead?,I guess I could put down on the books.|What would you like to do instead?,210,0,0,
@@ -82,16 +86,16 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 300,0,0,,Should we do|something else?,What would you like to do?,210,0,0,StopStudy()
 300,0,0,PoemAvail,I found a poem.  Would|you like to hear it?,"A poem?  (She nods.)|Yes, I would love that.",310,0,0,StartPoem()
 300,0,0,,I need to go.|(Leave the library.),,300,0,0,Leave()
-310,0,0,,"She walks in beauty,|like the night","(She repeats every words silently.)|She walks in beauty, like the night",311,0,0,
+310,0,0,,"She walks in beauty,|like the night","(She repeats every word silently.)|She walks in beauty, like the night",311,0,0,
 310,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
-311,0,0,,Of cloudless climes|and starry skies;,(She repeats every words silently.)|Of cloudless climes and starry skies;,312,0,0,
+311,0,0,,Of cloudless climes|and starry skies;,(She repeats every word silently.)|Of cloudless climes and starry skies;,312,0,0,
 311,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
-312,0,0,,And all that's best of|dark and bright,(She repeats every words silently.)|And all that's best of dark and bright,313,0,0,
+312,0,0,,And all that's best of|dark and bright,(She repeats every word silently.)|And all that's best of dark and bright,313,0,0,
 312,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
-313,0,0,,Meet in her aspect|and her eyes;,(She repeats every words silently.)|Meet in her aspect and her eyes;,314,0,0,
+313,0,0,,Meet in her aspect|and her eyes;,(She repeats every word silently.)|Meet in her aspect and her eyes;,314,0,0,
 313,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
-314,0,0,,Thus mellowed to|that tender light,(She repeats every words silently.)|Thus mellowed to that tender light,315,0,0,
+314,0,0,,Thus mellowed to|that tender light,(She repeats every word silently.)|Thus mellowed to that tender light,315,0,0,
 314,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
-315,0,0,,Which heaven to|gaudy day denies.,(She repeats every words silently.)|Which heaven to gaudy day denies.,316,0,0,
+315,0,0,,Which heaven to|gaudy day denies.,(She repeats every word silently.)|Which heaven to gaudy day denies.,316,0,0,
 315,0,0,,Forget it.|It's stupid.,"Oh!  (She seems very disappointed.)|You're right, nobody likes poetry anymore.",300,-1,0,
 316,0,0,,Did you like it?,"I loved it!  (She checks around.)|Oops, it was loud, let's study.",300,2,0,FinishPoem()
