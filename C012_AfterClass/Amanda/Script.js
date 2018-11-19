@@ -28,7 +28,7 @@ var C012_AfterClass_Amanda_SarahAvail = false;
 
 // Amanda can only check her notes if she's dressed
 function C012_AfterClass_Amanda_CheckNotes() {
-	if ((ActorGetValue(ActorCloth) == "") || (ActorGetValue(ActorCloth) == "Clothed") || (ActorGetValue(ActorCloth) == "Pajamas")) ActorSetPose("CheckNotes");
+	if (((ActorGetValue(ActorCloth) == "") || (ActorGetValue(ActorCloth) == "Clothed") || (ActorGetValue(ActorCloth) == "Pajamas")) && !ActorHasInventory("Collar") && !ActorIsRestrained() && !ActorIsGagged()) ActorSetPose("CheckNotes");
 	LeaveIcon = "Leave";
 }
 
@@ -77,7 +77,7 @@ function C012_AfterClass_Amanda_CalcParams() {
 // Chapter 12 After Class - Amanda Load
 function C012_AfterClass_Amanda_Load() {
 	
-	// Loads the scene to search in the wardrobe
+	// Loads the scene
 	LoadInteractions();
 	ActorLoad("Amanda", "Dorm");
 	Common_PlayerPose = "";
@@ -86,6 +86,7 @@ function C012_AfterClass_Amanda_Load() {
 	// Amanda's parameters
 	C012_AfterClass_Amanda_CalcParams();	
 	C012_AfterClass_Amanda_ChatAvail = !GameLogQuery(CurrentChapter, CurrentActor, "ChatDone");
+	C012_AfterClass_Amanda_SpankCount = 0;
 	C012_AfterClass_Amanda_SpankMaxCount = 10 - Math.floor(ActorGetValue(ActorLove) / 7);
 	if (C012_AfterClass_Amanda_SpankMaxCount < 6) C012_AfterClass_Amanda_SpankMaxCount = 6;
 	if (C012_AfterClass_Amanda_SpankMaxCount > 12) C012_AfterClass_Amanda_SpankMaxCount = 12;
@@ -224,6 +225,7 @@ function C012_AfterClass_Amanda_Click() {
 					OverridenIntroText = GetText("TurnTablesFromMistress");
 				}
 				else OverridenIntroText = GetText("TurnTables");
+				C012_AfterClass_Amanda_CalcParams();
 				CurrentTime = CurrentTime + 50000;
 			} else OverridenIntroText = GetText("RefuseBondage");
 			return;
@@ -821,7 +823,7 @@ function C012_AfterClass_Amanda_Spank() {
 		GameLogAdd("Spank");
 		ActorChangeAttitude(-1, 1 + PlayerGetSkillLevel("Fighting"));
 	}
-	if (PlayerGetSkillLevel("Fighting") > 0) GetText("SpankWithStrength");
+	if (PlayerGetSkillLevel("Fighting") > 0) OverridenIntroText = GetText("SpankWithStrength");
 }
 
 // Chapter 12 After Class - When the player tickles Amanda, it doesn't affect her

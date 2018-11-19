@@ -24,7 +24,7 @@ var C012_AfterClass_Sidney_CanKickOut = false;
 
 // Sidney can only check her cell phone if she's dressed
 function C012_AfterClass_Sidney_CheckCellPhone() {
-	if ((ActorGetValue(ActorCloth) == "Shorts") || (ActorGetValue(ActorCloth) == "BlackLingerie")) ActorSetPose("CheckCellPhone");
+	if (((ActorGetValue(ActorCloth) == "Shorts") || (ActorGetValue(ActorCloth) == "BlackLingerie")) && !ActorHasInventory("Collar") && !ActorIsRestrained() && !ActorIsGagged()) ActorSetPose("CheckCellPhone");
 	LeaveIcon = "Leave";
 }
 
@@ -71,7 +71,7 @@ function C012_AfterClass_Sidney_CalcParams() {
 // Chapter 12 After Class - Sidney Load
 function C012_AfterClass_Sidney_Load() {
 	
-	// Loads the scene to search in the wardrobe
+	// Loads the scene
 	LoadInteractions();
 	ActorLoad("Sidney", "Dorm");
 	Common_PlayerPose = "";
@@ -83,6 +83,7 @@ function C012_AfterClass_Sidney_Load() {
 	// Sidney's parameters
 	C012_AfterClass_Sidney_CalcParams();	
 	C012_AfterClass_Sidney_ChatAvail = !GameLogQuery(CurrentChapter, CurrentActor, "ChatDone");
+	C012_AfterClass_Sidney_SpankCount = 0;
 	C012_AfterClass_Sidney_SpankMaxCount = 10 - Math.floor(ActorGetValue(ActorLove) / 7);
 	if (C012_AfterClass_Sidney_SpankMaxCount < 6) C012_AfterClass_Sidney_SpankMaxCount = 6;
 	if (C012_AfterClass_Sidney_SpankMaxCount > 12) C012_AfterClass_Sidney_SpankMaxCount = 12;
@@ -204,6 +205,7 @@ function C012_AfterClass_Sidney_Click() {
 					OverridenIntroText = GetText("TurnTablesFromMistress");
 				}
 				else OverridenIntroText = GetText("TurnTables");
+				C012_AfterClass_Sidney_CalcParams();
 				CurrentTime = CurrentTime + 50000;
 			} else OverridenIntroText = GetText("RefuseBondage");
 			return;
@@ -226,6 +228,10 @@ function C012_AfterClass_Sidney_Click() {
 			OverridenIntroText = GetText("StripForSecondRope");
 			return;
 		}
+		
+		// Sidney cannot have 3 ropes if she's wearing the pig costume
+		if ((ActorGetValue(ActorPose) == "Pig") && (ClickInv == "Rope"))
+			return;
 		
 		// Apply the clicked restrain
 		ActorApplyRestrain(ClickInv);
@@ -1038,4 +1044,9 @@ function C012_AfterClass_Sidney_TestPigCostume() {
 	
 	}
 
+}
+
+// Chapter 12 After Class - When Sidney brings the player out naked to be humiliated
+function C012_AfterClass_Sidney_StartPlayerHumiliation() {
+	SetScene(CurrentChapter, "Humiliation");
 }

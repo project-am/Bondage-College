@@ -101,7 +101,7 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 230,0,0,,A guide that will|make choices for you.,I can make my fucking choices.,240,0,0,
 230,0,0,,A strict guide that|will control your life.,(She seems surprised by what you said.)|I don't need fucking control.,240,0,0,EnslaveSidneyCount()
 240,0,0,,I will give you|structure and rules.,I'm not good with rules.|I'm a born rebel.,250,0,0,
-240,0,0,,(Slap her face.)|Stop swearing!,(You slap her face and she whimpers.)|I'm very sorry Miss COMMON_PLAYERNAME.,241,-1,1,EnslaveSidneyCount()
+240,0,0,,(Slap her face.)|Stop swearing!,(You slap her face and she whimper.)|I'm very sorry Miss COMMON_PLAYERNAME.,241,-1,1,EnslaveSidneyCount()
 241,0,0,,I will give you|structure and rules.,I'm not good with rules.|I'm a born rebel.,250,0,0,
 250,0,0,,You won't be a rebel.|You'll be my slave.,(She trembles at the thought.)|And what does a slave do?,260,0,0,EnslaveSidneyCount()
 250,0,0,,You won't be a rebel.|You'll be my submissive.,(She frowns and looks at you.)|And what does a submissive do?,260,0,0,
@@ -126,7 +126,7 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 292,0,0,,On your knees slut.,(She slowly kneels in front of you.),293,-1,1,"ActorSetPose(""Kneel"")"
 293,0,0,,"Once this collar is locked,|you will be my property.",(She nods and looks down.)|I understand Mistress.,294,0,0,
 293,0,0,,"Once locked on your neck,|there's no turning back.",(She trembles and looks down.)|I understand Mistress.,294,0,0,
-294,0,0,,(Lock the collar|around her neck.),(You circle the leather collar around her neck|buckle it and put a padlock to lock it in place.),295,0,3,LockCollarSidney()
+294,0,0,,(Lock the collar|around her neck.),"(You circle the leather collar around her neck,|buckle it and put a padlock to lock it in place.)",295,0,3,LockCollarSidney()
 295,0,0,,You are now my bitch.,"(She adjusts her neck to the collar.)|Yes Mistress, I will follow your rules.",296,-1,0,
 295,0,0,,You are mine.,"(She adjusts her neck to the collar.)|Yes Mistress, I will follow your rules.",296,0,0,
 295,0,0,,You are now|my submissive.,"(She adjusts her neck to the collar.)|Yes Mistress, I will follow your rules.",296,1,0,
@@ -569,3 +569,12 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 3933,0,0,,I won't disobey|anymore Mistress.,Good!  Now get lost for a few minutes.|(She gets her phone and starts to text.),3999,0,0,"EndPunishment(""Spanked"")"
 3933,0,0,,(Dry your tears.),Stop crying and get lost for a few minutes.|(She gets her phone and starts to text.),3999,0,-1,"EndPunishment(""Spanked"")"
 3933,0,0,,(Stay silent and|look strong.),Get lost for a few minutes.|(She gets her phone to text.),3999,0,1,"EndPunishment(""Spanked"")"
+3940,0,0,,What do you|have in mind?,I'll drag your naked ass in public|and make sure everyone sees you.,3941,0,0,
+3940,0,0,,Humiliation?|This is nothing.,I'll drag your naked ass in public|and make sure everyone sees you.,3941,0,1,
+3940,0,0,,Oh please Mistress!|Don't humiliate me.,I'll drag your naked ass in public|and make sure everyone sees you.,3941,0,-1,
+3940,0,0,,I'm not sure I like|where this is going.,I'll drag your naked ass in public|and make sure everyone sees you.,3941,0,0,
+3941,0,0,,Public humiliation?|This is bullshit!,You will fucking remember it.|Let's go out little bitch.,3942,-1,0,
+3941,0,0,,Naked in public? |Oh my lord.,You will fucking remember it.|Let's go out little bitch.,3942,0,0,
+3941,0,0,,This sounds tough|but fair Mistress.,You will fucking remember it.|Let's go out little bitch.,3942,1,0,
+3942,0,0,,"Yes, let's go.|(Go out naked.)",,3942,0,0,StartPlayerHumiliation()
+3942,0,0,,No way!,(She slaps your face hard.)|Shut up!  We are going!,3942,0,0,

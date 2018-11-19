@@ -19,11 +19,12 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 200,0,0,,What's going on?,"Not much, It's pretty quiet right now.|So?  Did you get in trouble in school?",220,0,0,TestIsolationSarah()
 200,0,0,,Amanda is here?,"No, she might be at the library.",200,0,0,
 200,0,0,,Sidney is here?,"Nope, maybe the zoo came to get her.",200,0,0,
-200,0,0,,Jennifer is here?,"JENNNNNNNNNIFER!  (She waits.)|Nope, she's not here or she's deaf.",200,0,0,
+200,0,0,,Jennifer is here?,"JENNNNNNNNNIFER!  (She waits.)|Nope, she's not here or she's deaf.",200,0,0,CheckJenniferAvail()
 200,0,0,,"Sorry, wrong door.|(Leave the place.)",,200,0,0,Leave()
 201,0,0,,Very well Sarah.|(Back to your dorm.),,201,0,0,Leave()
 201,0,0,,Have fun tonight!|(Back to your dorm.),,201,1,0,Leave()
 201,0,0,,Fine!  You suck.|(Back to your dorm.),,201,-1,0,Leave()
+202,0,0,,Thanks Sarah!|(Wait for Jennifer.),,300,0,0,LoadJennifer()
 210,0,0,,(Chit-chat with Sarah.),(You chit-chat about music and parties|and get to know each other better.),210,0,0,ChitChat()
 210,0,0,,We could setup a|party at my place.,That's a pretty cool idea but I|already have plans for tonight.,210,0,0,TestInviteSarah()
 210,0,0,,Do you want to|go visit my place?,"No thanks, I have a big evening to plan.",210,0,0,TestInviteSarah()
@@ -52,3 +53,41 @@ Stage,LoveReq,SubReq,VarReq,Interaction,Result,NextStage,LoveMod,SubMod,Function
 224,0,0,,Yes!  Let's go now.|(Visit the basement.),,224,1,0,EnterIsolation()
 224,0,0,,No.  It's a bad idea.,(She looks disappointed.)  Very well.|We can stay here and chat if you prefer.,210,-1,0,TestRefuseIsolation()
 225,0,0,,Alright Miss.|(Visit the basement.),,225,1,-1,EnterIsolation()
+300,0,0,,How are you?,"I'm fine, thanks.|Why are you here?",310,0,0,
+300,0,0,,What's going on?,Not much right now.|Why are you here?,310,0,0,
+300,0,0,,Can I speak|with Amanda?,"Sorry, she's not here right now.|Maybe she's still in school studying.",300,0,0,
+300,0,0,,Can I speak|with Sidney?,"Sorry, she's not here right now.|Maybe she went to the campus pub.",300,0,0,
+300,0,0,,Can I speak|with Sarah?,"Sorry, she's not here right now.|She could be at a rave or a party.",300,0,0,
+300,0,0,,"Sorry, wrong door.|(Leave the place.)",,300,0,0,Leave()
+310,0,0,,(Chit-chat with Jennifer.),(You chit-chat about sports and art|and get to know each other better.),310,0,0,ChitChat()
+310,0,0,,Do you want to|go visit my place?,"Sorry, I don't have enough time for that.",310,0,0,TestInviteJennifer()
+310,0,0,,Do you want to go|running with me?,Yes!  Let's go right now.|It will be a great exercise.,320,1,0,
+310,0,0,,What are you|doing tonight?,I'm going running first and I'll probably|stop at the college swimming pool.,310,0,0,
+310,0,0,JenniferBelt,I'll help you with|your belt later.,"Thanks, this is getting really annoying.",310,0,0,
+310,0,0,,It's boring in my dorm.|Can I chill with you?,Absolutely.  But I'll go running around eighteen.,310,0,0,
+310,0,0,,I need to go Jennifer.|(Leave the place.),,310,0,0,Leave()
+311,0,0,,Very well Jennifer.|(Back to your dorm.),,311,0,0,Leave()
+311,0,0,,Have fun running!|(Back to your dorm.),,311,1,0,Leave()
+311,0,0,,Running is for losers.|(Back to your dorm.),,311,-1,0,Leave()
+311,0,0,,I'll go with you!|(Run with Jennifer.),Nice!  It will be a great exercise.,320,0,0,
+312,0,0,,Yes!  Let's go right now.|(Walk back with Jennifer.),,312,0,0,LeaveWithJennifer()
+312,0,0,,We can go a later.|(Stay here with her.),Very well.  We can chat and|get to know each other better.,310,0,0,
+320,0,0,!WearingTennisOutfit,What should we|wear to run?,We can wear matching tennis outfits.|(You both change into tennis clothes.),321,0,0,WearTennisOutfit()
+320,0,0,!WearingTennisOutfit,We could wear some|tennis outfits to run.,Yes!  We will have matching looks.|(You both change into tennis clothes.),321,0,0,WearTennisOutfit()
+320,0,0,WearingTennisOutfit,We can run in|our tennis outfits.,Yes!  We will have a matching look.|(She changes into her tennis clothes.),321,0,0,WearTennisOutfit()
+320,0,0,WearingTennisOutfit,Dress like me|and we can go.,Sure!  We will have a matching look.|(She changes into her tennis clothes.),321,0,0,WearTennisOutfit()
+321,0,0,,Are you ready?,(You both go out to the school|race track and start to jog.),322,0,0,EnterTrack()
+321,0,0,,Perfect!  Let's go.,(You both go out to the school|race track and start to jog.),322,0,0,EnterTrack()
+321,0,0,,You're looking good.|It's time to run!,(You both go out to the school|race track and start to jog.),322,0,0,EnterTrack()
+322,0,0,,You will bite my dust!|(Run with Jennifer.),,323,0,1,RunWithJennifer()
+322,0,0,,Let's take it slow.|(Run with Jennifer.),,323,0,-1,RunWithJennifer()
+322,0,0,,Let's do this!|(Run with Jennifer.),,323,0,0,RunWithJennifer()
+323,0,0,,That was fun!,"Yes, it's much better to run with a friend.|I'll stop by the pool, do you want to join?",324,0,0,
+323,0,0,,Nice race.,"Yes, it's much better to run with a friend.|I'll stop by the pool, do you want to join?",324,0,0,
+323,0,0,,That's enough.,"We've done enough running for the day.|I'll stop by the pool, do you want to join?",324,0,0,
+324,0,0,!Common_PlayerChaste,I'll go get my swimsuit.|(Change and go swim.),,324,0,0,PoolWithJennifer()
+324,0,0,Common_PlayerChaste,I can't go to the pool.|(Walk back in your belt.),,324,0,0,Leave()
+324,0,0,,Forget the pool.|Come to my place.,"Sorry, I want to go swim.|We'll see each other later.",326,0,0,TestSkipPool()
+324,0,0,,I don't like swimming.|(Back to your dorm.),,324,0,0,Leave()
+325,0,0,,Let's go right now.|(Go back with Jennifer.),,325,0,0,LeaveWithJennifer()
+326,0,0,,Have fun swimming.|(Back to your dorm.),,326,0,0,Leave()

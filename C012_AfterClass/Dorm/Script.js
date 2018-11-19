@@ -12,9 +12,11 @@ function C012_AfterClass_Dorm_SetPunishmentPose() {
 	if (GameLogQuery(CurrentChapter, "", "EventGrounded")) {
 		if (Common_PlayerOwner == "Sidney") Common_PlayerPose = "TwoRopesPunishment";
 		if (Common_PlayerOwner == "Amanda") Common_PlayerPose = "HogtiePunishment";
+		if (Common_PlayerOwner == "Jennifer") Common_PlayerPose = "FoldPunishment";
 		if (CurrentScreen != "Dorm") {
 			if (CurrentScreen == Common_PlayerOwner) OverridenIntroText = GetText("StillGrounded");
 			else OverridenIntroText = GetText("StillGroundedByOther");
+			if ((CurrentActor != "") && ActorIsGagged()) OverridenIntroText = GetText("StillGroundedGagged");
 		}
 	}
 }
@@ -36,25 +38,25 @@ function C012_AfterClass_Dorm_LeavingGuest() {
 
 	// Sidney will leave at 20:00, it ends any grounding event
 	if ((C012_AfterClass_Dorm_Guest.indexOf("Sidney") >= 0) && (CurrentTime >= C012_AfterClass_Dorm_SidneyExitTime) && (CurrentTime <= C012_AfterClass_Dorm_SidneyReturnTime) && !GameLogQuery(CurrentChapter, "Sidney", "BackFromRockShow") && !ActorSpecificIsRestrained("Sidney") && !GameLogQuery(CurrentChapter, "Sidney", "KickedOutFromDorm")) {
-		C012_AfterClass_Dorm_Guest.splice("Sidney");
-		if (CurrentScreen == "Dorm") {
+		C012_AfterClass_Dorm_Guest.splice("Sidney");		
+		if ((CurrentScreen == "Dorm") && (!C012_AfterClass_Dorm_PlayerGrounded || (Common_PlayerOwner == "Sidney"))) {
 			C012_AfterClass_Sidney_CurrentStage = 400;
 			if (C012_AfterClass_Dorm_PlayerGrounded && (Common_PlayerOwner == "Sidney")) GameLogSpecificAddTimer(CurrentChapter, "Sidney", "EventGrounded", 1);
 			SetScene(CurrentChapter, "Sidney");
 			ActorSetCloth("Shorts");
 			if (C012_AfterClass_Dorm_PlayerGrounded && (Common_PlayerOwner == "Sidney")) OverridenIntroText = GetText("GroundingEndForLeaving");
-		}
+		} else C012_AfterClass_Dorm_CalGuest();
 	}
 
 	// Sarah will leave at 21:00, it cancels the bed with Amanda event
 	if ((C012_AfterClass_Dorm_Guest.indexOf("Sarah") >= 0) && (CurrentTime >= C012_AfterClass_Dorm_SarahExitTime) && !GameLogQuery(CurrentChapter, "Sarah", "BackFromBondageClub") && !ActorSpecificIsRestrained("Sarah") && !GameLogQuery(CurrentChapter, "Sarah", "KickedOutFromDorm")) {		
 		GameLogSpecificAddTimer(CurrentChapter, "Player", "AmandaAndSarahInBed", 1);
 		C012_AfterClass_Dorm_Guest.splice("Sarah");
-		if (CurrentScreen == "Dorm") {
+		if ((CurrentScreen == "Dorm") && !C012_AfterClass_Dorm_PlayerGrounded) {
 			C012_AfterClass_Sarah_CurrentStage = 400;
 			SetScene(CurrentChapter, "Sarah");
 			ActorSetCloth("BrownDress");
-		}
+		} else C012_AfterClass_Dorm_CalGuest();
 	}
 	
 }
@@ -68,6 +70,8 @@ function C012_AfterClass_Dorm_CalGuest() {
 	if (GameLogQuery(CurrentChapter, "Sidney", "EnterDormFromPub") && !GameLogQuery(CurrentChapter, "Sidney", "KickedOutFromDorm") && ((CurrentTime <= C012_AfterClass_Dorm_SidneyExitTime) || (CurrentTime >= C012_AfterClass_Dorm_SidneyReturnTime) || GameLogQuery(CurrentChapter, "Sidney", "BackFromRockShow") || ActorSpecificIsRestrained("Sidney"))) 
 		if (!GameLogQuery(CurrentChapter, "Sidney", "LoverBreakUp") || (ActorSpecificGetValue("Sidney", ActorOwner) == "Player"))
 			C012_AfterClass_Dorm_Guest.push("Sidney");
+	if ((GameLogQuery(CurrentChapter, "Jennifer", "EnterDormFromPool") || GameLogQuery(CurrentChapter, "Jennifer", "EnterDormFromRoommates")) && !GameLogQuery(CurrentChapter, "Jennifer", "KickedOutFromDorm")) 
+		C012_AfterClass_Dorm_Guest.push("Jennifer");
 	if ((GameLogQuery(CurrentChapter, "Amanda", "EnterDormFromLibrary") || GameLogQuery(CurrentChapter, "Amanda", "EnterDormFromRoommates")) && !GameLogQuery(CurrentChapter, "Amanda", "KickedOutFromDorm") && !GameLogQuery(CurrentChapter, "Amanda", "LeaveDormEarly"))
 		if (!GameLogQuery(CurrentChapter, "Amanda", "LoverBreakUp") || (ActorSpecificGetValue("Amanda", ActorOwner) == "Player"))
 			C012_AfterClass_Dorm_Guest.push("Amanda");
@@ -100,10 +104,12 @@ function C012_AfterClass_Dorm_Load() {
 	ReadCSV("CurrentText", CurrentChapter, "Sidney", "Text", GetWorkingLanguage());
 	ReadCSV("CurrentText", CurrentChapter, "Amanda", "Text", GetWorkingLanguage());
 	ReadCSV("CurrentText", CurrentChapter, "Sarah", "Text", GetWorkingLanguage());
+	ReadCSV("CurrentText", CurrentChapter, "Jennifer", "Text", GetWorkingLanguage());
 
 	// Owners will not stay naked
 	if ((Common_PlayerOwner == "Sidney") && (ActorSpecificGetValue("Sidney", ActorCloth) == "Naked")) ActorSpecificSetCloth("Sidney", "Shorts");
-	if ((Common_PlayerOwner == "Amanda") && (ActorSpecificGetValue("Amanda", ActorCloth) == "Naked")) ActorSpecificSetCloth("Amanda", "");
+	if ((Common_PlayerOwner == "Amanda") && (ActorSpecificGetValue("Amanda", ActorCloth) == "Naked")) ActorSpecificSetCloth("Amanda", "Clothed");
+	if ((Common_PlayerOwner == "Jennifer") && (ActorSpecificGetValue("Jennifer", ActorCloth) == "Naked")) ActorSpecificSetCloth("Jennifer", "Clothed");
 
 	// Calculates the time when Sidney will leave and return
 	C012_AfterClass_Dorm_SidneyExitTime = 20 * 60 * 60 * 1000;
@@ -131,6 +137,7 @@ function C012_AfterClass_Dorm_Load() {
 	C012_AfterClass_Sidney_CurrentStage = 0;
 	C012_AfterClass_Amanda_CurrentStage = 0;
 	C012_AfterClass_Sarah_CurrentStage = 0;
+	C012_AfterClass_Jennifer_CurrentStage = 0;
 	C012_AfterClass_Dorm_CalGuest();
 }
 
@@ -150,19 +157,31 @@ function C012_AfterClass_Dorm_Run() {
 	if (C012_AfterClass_Dorm_PlayerGrounded && !GameLogQuery(CurrentChapter, "", "EventGrounded") && (C012_AfterClass_Sidney_CurrentStage != 400)) {
 		if (Common_PlayerOwner == "Sidney") C012_AfterClass_Sidney_CurrentStage = 3915;
 		if (Common_PlayerOwner == "Amanda") C012_AfterClass_Amanda_CurrentStage = 3915;
+		if (Common_PlayerOwner == "Jennifer") C012_AfterClass_Jennifer_CurrentStage = 3915;
 		SetScene(CurrentChapter, Common_PlayerOwner);
 		LeaveIcon = "";
 	}
 
 	// If the player owner wants to start a random activity with the player
-	if (!C012_AfterClass_Dorm_PlayerGrounded && (Common_PlayerOwner != "") && (C012_AfterClass_Dorm_Guest.indexOf(Common_PlayerOwner) >= 0) && !GameLogQuery(CurrentChapter, CurrentActor, "EventGeneric") && !GameLogQuery(CurrentChapter, CurrentActor, "EventGenericNext"))
+	if (!C012_AfterClass_Dorm_PlayerGrounded && (Common_PlayerOwner != "") && (C012_AfterClass_Dorm_Guest.indexOf(Common_PlayerOwner) >= 0) && !GameLogQuery(CurrentChapter, Common_PlayerOwner, "EventGeneric") && !GameLogQuery(CurrentChapter, Common_PlayerOwner, "EventGenericNext"))
 		if ((Common_PlayerOwner != "Amanda") || !GameLogQuery(CurrentChapter, "Player", "AmandaAndSarahInBed")) {
 			if (Common_PlayerOwner == "Sidney") C012_AfterClass_Sidney_CurrentStage = 450;
 			if (Common_PlayerOwner == "Amanda") C012_AfterClass_Amanda_CurrentStage = 450;
+			if (Common_PlayerOwner == "Jennifer") C012_AfterClass_Jennifer_CurrentStage = 450;
 			SetScene(CurrentChapter, Common_PlayerOwner);
 			LeaveIcon = "";
 		}
 
+	// If Sarah wants to start a random activity with the player as an owner
+	if (!C012_AfterClass_Dorm_PlayerGrounded && (C012_AfterClass_Dorm_Guest.indexOf("Sarah") >= 0) && (ActorSpecificGetValue("Sarah", ActorOwner) == "Player") && !GameLogQuery(CurrentChapter, "Sarah", "EventGenericNext") && !GameLogQuery(CurrentChapter, "Sarah", "StopEvents") && !GameLogQuery(CurrentChapter, "Player", "AmandaAndSarahInBed")) {
+		CurrentActor = "Sarah";
+		if (ActorIsGagged()) C012_AfterClass_Sarah_CurrentStage = 2200;
+		else if (ActorIsRestrained()) C012_AfterClass_Sarah_CurrentStage = 2100;
+		else C012_AfterClass_Sarah_CurrentStage = 2000;
+		SetScene(CurrentChapter, "Sarah");
+		LeaveIcon = "";
+	}
+		
 	// Make sure we are still in the dorm after the previous events
 	if (CurrentScreen == "Dorm") {
 		
@@ -212,5 +231,6 @@ function C012_AfterClass_Dorm_Click() {
 	if ((MouseX >= C012_AfterClass_Dorm_PlayerPos + 100) && (MouseX < C012_AfterClass_Dorm_PlayerPos + 300) && (MouseY >= 0) && (MouseY <= 600) && (C012_AfterClass_Dorm_GuestVisible.length >= 1)) SetScene(CurrentChapter, C012_AfterClass_Dorm_GuestVisible[0]);
 	if ((MouseX >= C012_AfterClass_Dorm_PlayerPos + 300) && (MouseX < C012_AfterClass_Dorm_PlayerPos + 500) && (MouseY >= 0) && (MouseY <= 600) && (C012_AfterClass_Dorm_GuestVisible.length >= 2)) SetScene(CurrentChapter, C012_AfterClass_Dorm_GuestVisible[1]);
 	if ((MouseX >= C012_AfterClass_Dorm_PlayerPos + 500) && (MouseX < C012_AfterClass_Dorm_PlayerPos + 700) && (MouseY >= 0) && (MouseY <= 600) && (C012_AfterClass_Dorm_GuestVisible.length >= 3)) SetScene(CurrentChapter, C012_AfterClass_Dorm_GuestVisible[2]);
-	
+	if ((MouseX >= C012_AfterClass_Dorm_PlayerPos + 700) && (MouseX < C012_AfterClass_Dorm_PlayerPos + 900) && (MouseY >= 0) && (MouseY <= 600) && (C012_AfterClass_Dorm_GuestVisible.length >= 4)) SetScene(CurrentChapter, C012_AfterClass_Dorm_GuestVisible[3]);
+
 }

@@ -47,7 +47,7 @@ function C012_AfterClass_DormExit_LaunchKinbaku() {
 // Chapter 12 After Class - Launch the Roommates Dorm
 function C012_AfterClass_DormExit_LaunchRoommatesDorm() {
 	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
-		if (Common_PlayerClothed && ((Common_PlayerCostume == "") || (Common_PlayerCostume == "BlackDress") || (Common_PlayerCostume == "Teacher"))) {
+		if (Common_PlayerClothed && ((Common_PlayerCostume == "") || (Common_PlayerCostume == "BlackDress") || (Common_PlayerCostume == "Teacher") || (Common_PlayerCostume == "Tennis"))) {
 			CurrentTime = CurrentTime + 110000;
 			SetScene(CurrentChapter, "Roommates");
 		} else OverridenIntroText = GetText("RegularClothesFirst");
@@ -80,6 +80,7 @@ function C012_AfterClass_DormExit_LaunchLibrary() {
 		if (Common_PlayerClothed && (Common_PlayerCostume == "")) {
 			if (CurrentTime < (20.9 * 60 * 60 * 1000)) {
 				CurrentTime = CurrentTime + 290000;
+				C012_AfterClass_Library_CurrentStage = 0;
 				SetScene(CurrentChapter, "Library");				
 			} else OverridenIntroText = GetText("LibraryClosed");
 		} else OverridenIntroText = GetText("SchoolClothesFirst");
@@ -98,4 +99,20 @@ function C012_AfterClass_DormExit_LaunchRescueSarah() {
 			GameLogAdd("IsolationRescue");
 		} else OverridenIntroText = GetText("SchoolClothesFirst");
 	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Check if the player can go to the Bondage Club
+function C012_AfterClass_DormExit_LaunchBondageClub() {
+	if (!Common_PlayerRestrained && !Common_PlayerGagged) {
+		if (Common_PlayerClothed && ((Common_PlayerCostume == "") || (Common_PlayerCostume == "BlackDress") || (Common_PlayerCostume == "Teacher"))) {
+			if (CurrentTime >= 20 * 60 * 60 * 1000) {
+				C012_AfterClass_DormExit_CurrentStage = 10;
+			} else OverridenIntroText = GetText("TooEarlyForBondageClub");
+		} else OverridenIntroText = GetText("RegularClothesFirst");
+	} else OverridenIntroText = GetText("UnrestrainFirst");
+}
+
+// Chapter 12 After Class - Enter the Bondage Club
+function C012_AfterClass_DormExit_EnterBondageClub() {
+	SetScene("C013_BondageClub", "Intro");
 }

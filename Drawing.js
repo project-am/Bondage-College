@@ -80,6 +80,10 @@ function DrawText(Text, X, Y, Color) {
 	// Replace the COMMON_NUMBER keyword with a number generated while playing the game
 	Text = Text.replace("COMMON_NUMBER", Common_Number);
 
+	// Remove the timing tag if present
+	if (Text.indexOf("ADD_MINUTES:") >= 0)
+		Text = Text.substring(0, Text.indexOf("ADD_MINUTES:"));
+
 	// Font is fixed for now, color can be set
 	MainCanvas.font = "24px Arial";
 	MainCanvas.fillStyle = Color;
@@ -413,7 +417,7 @@ function DrawGetPlayerImageName(IncludePose) {
 
 	// Third part is the collar, which only shows for certain clothes
 	var ImageCollar = "";
-	if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Tennis") || (ImageCloth == "Judo") || (ImageCloth == "RedBikini") || (ImageCloth == "BrownDress")) {
+	if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Tennis") || (ImageCloth == "Judo") || (ImageCloth == "RedBikini")) {
 		if (PlayerHasLockedInventory("Collar")) ImageCollar = "_Collar";
 		else ImageCollar = "_NoCollar";
 	}
@@ -477,7 +481,7 @@ function DrawActor(ActorToDraw, X, Y, Zoom) {
 
 		// Third part is the collar, which only shows for certain clothes
 		var ImageCollar = "";
-		if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Shorts")) {
+		if ((ImageCloth == "Underwear") || (ImageCloth == "Naked") || (ImageCloth == "ChastityBelt") || (ImageCloth == "Damsel") || (ImageCloth == "Shorts") || (ImageCloth == "Swimsuit") || (ImageCloth == "Tennis") || (ImageCloth == "BrownDress")) {
 			if (ActorSpecificHasInventory(ActorToDraw, "Collar")) ImageCollar = "_Collar";
 		}
 
